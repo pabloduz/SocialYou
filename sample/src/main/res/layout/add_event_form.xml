@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context=".AddEventForm">
+
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="90dp"
+        android:ems="10"
+        android:hint="@string/title"
+        android:inputType="textPersonName"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/slogan2"
+        android:autofillHints="@string/title" />
+
+    <EditText
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/date"
+        android:inputType="date"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:autofillHints="@string/date"/>
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="@string/description"
+        android:inputType="textEmailAddress"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        android:autofillHints="@string/description"/>
+
+    <TextView
+        android:id="@+id/slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/slogan"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/slogan2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/slogan2"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/slogan" />
+
+    <Button
+        android:id="@+id/send_button"
+        android:background="@drawable/button_style"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/white"
+        android:text="@string/send"
+        app:layout_constraintLeft_toLeftOf="@id/description"
+        app:layout_constraintTop_toTopOf="@id/description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

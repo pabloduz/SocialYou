@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "217452634814",
+    "firebase_url": "https://socialyou-be6cf.firebaseio.com",
+    "project_id": "socialyou-be6cf",
+    "storage_bucket": "socialyou-be6cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217452634814:android:d5f2479db8bce125e234ef",
+        "android_client_info": {
+          "package_name": "com.eccos.socialyou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217452634814-b0g4ubdgvodmjrdpcl1h8b1mbish4tq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eccos.socialyou",
+            "certificate_hash": "47dc40b6ad5f0df2c767d8a450b3d041cbf07f44"
+          }
+        },
+        {
+          "client_id": "217452634814-ansf46gc7tsd0d5grtgp9r809cr3jikm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBm9H0JFAh-FpuF99o_qQgSitKOV7I0Yeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217452634814-ansf46gc7tsd0d5grtgp9r809cr3jikm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
