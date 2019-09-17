@@ -5,18 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 
 import com.firebase.client.Firebase;
 import com.firebase.geofire.GeoFire;
@@ -37,7 +45,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.os.SystemClock.sleep;
@@ -59,7 +76,7 @@ public class AddEventForm extends AppCompatActivity {
 
     private Uri mImageUri;
 
-    private EditText title; private EditText date; private EditText description;
+    private EditText title; private EditText date; private EditText time; private EditText description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +89,13 @@ public class AddEventForm extends AppCompatActivity {
 
         title = findViewById(R.id.title);
         date = findViewById(R.id.date);
+        time = findViewById(R.id.time);
         description = findViewById(R.id.description);
+        date.setInputType(InputType.TYPE_NULL);
 
         startLocationUpdates();
 
+        setDialogCalendar();
 
         final Button chooseImage = (Button) findViewById(R.id.choose_image);
         chooseImage.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +192,6 @@ public class AddEventForm extends AppCompatActivity {
     }
 
 
-
     private boolean checkTextFields() {
         if(TextUtils.isEmpty(title.getText())) {
             /***   You can Toast a message here that the title is Empty **/
@@ -180,6 +199,9 @@ public class AddEventForm extends AppCompatActivity {
 
         }else if (TextUtils.isEmpty(date.getText())) {
             date.setError("Date is required!");
+
+        }else if (TextUtils.isEmpty(time.getText())) {
+            time.setError("Time is required!");
 
         }else if (TextUtils.isEmpty(description.getText())) {
             description.setError("Description is required!");
@@ -234,6 +256,102 @@ public class AddEventForm extends AppCompatActivity {
                 });
     }
 
+    private void setDialogCalendar() {
+        final Calendar myCalendar = Calendar.getInstance();
+
+        date.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(AddEventForm.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                          int dayOfMonth) {
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateLabel(myCalendar);
+                    }
+
+                }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
+        date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (date.hasFocus()) {
+                    new DatePickerDialog(AddEventForm.this, new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                              int dayOfMonth) {
+                            myCalendar.set(Calendar.YEAR, year);
+                            myCalendar.set(Calendar.MONTH, monthOfYear);
+                            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            updateLabel(myCalendar);
+                        }
+
+                    }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                }
+            }
+        });
+
+        time.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                new TimePickerDialog(AddEventForm.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                String dateTime = hourOfDay + ":" + String.format(Locale.getDefault(), "%02d", minute);
+                                time.setText(dateTime);
+                            }
+
+
+                        }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+            }
+        });
+
+
+        time.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (time.hasFocus()) {
+                    new TimePickerDialog(AddEventForm.this,
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay,
+                                                      int minute) {
+
+                                    String dateTime = hourOfDay + ":" + String.format(Locale.getDefault(), "%02d", minute);
+                                    time.setText(dateTime);
+
+                                }
+                            }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+                }
+            }
+        });
+    }
+
+
+    private void updateLabel(Calendar myCalendar) {
+
+        String myFormat = "MM/dd/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+
+        date.setText(sdf.format(myCalendar.getTime()));
+    }
 
     public void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(AddEventForm.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

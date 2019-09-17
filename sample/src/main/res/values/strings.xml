@@ -31,5 +31,6 @@
     <string name="image">Click to Select Image</string>
     <string name="select_image">Select an image first!</string>
     <string name="image_selected">Image loaded!</string>
+    <string name="time">Time</string>
 
 </resources>
