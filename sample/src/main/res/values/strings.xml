@@ -8,7 +8,7 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
     <string name="reload">Reload</string>
-    <string name="add_spot_to_first">Add spot to first</string>
+    <string name="add_event">Create an event</string>
     <string name="add_spot_to_last">Add spot to last</string>
     <string name="remove_spot_from_first">Remove spot from first</string>
     <string name="remove_spot_from_last">Remove spot from last</string>
@@ -28,4 +28,8 @@
     <string name="slogan">Share events,</string>
     <string name="slogan2">Find local people.</string>
     <string name="send">Send</string>
+    <string name="image">Click to Select Image</string>
+    <string name="select_image">Select an image first!</string>
+    <string name="image_selected">Image loaded!</string>
+
 </resources>

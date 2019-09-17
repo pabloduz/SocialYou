@@ -12,9 +12,9 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        android:screenOrientation="portrait">
-        <activity android:name="com.eccos.socialyou.AuthActivity">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name="com.eccos.socialyou.AuthActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,9 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.eccos.socialyou.MainActivity">
+        <activity android:name="com.eccos.socialyou.MainActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name="com.eccos.socialyou.AddEventForm">
+        <activity android:name="com.eccos.socialyou.AddEventForm"
+            android:screenOrientation="portrait">
         </activity>
 
 

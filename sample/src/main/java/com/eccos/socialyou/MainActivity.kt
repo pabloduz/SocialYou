@@ -1,6 +1,9 @@
 package com.eccos.socialyou
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,6 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.navigation.NavigationView
 import com.eccos.socialyou.cardstackview.*
+import com.firebase.client.Firebase
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -25,14 +30,36 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val cardStackView by lazy { findViewById<CardStackView>(R.id.card_stack_view) }
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private val adapter by lazy { CardStackAdapter(createSpots()) }
+    private val myLocationPermissionRequest = 101
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setupNavigation()
-        setupCardStackView()
-        setupButton()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), myLocationPermissionRequest)
+        }
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            myLocationPermissionRequest ->
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Firebase.setAndroidContext(this)
+                    setContentView(R.layout.activity_main)
+                    setupNavigation()
+                    setupCardStackView()
+                    setupButton()
+
+
+                } else {
+                    Toast.makeText(this, "This app requires location permissions to be granted.", Toast.LENGTH_LONG).show()
+                    finish()
+                }
+        }
+    }
+
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -86,7 +113,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.reload -> reload()
-                R.id.add_spot_to_first -> addFirst(1)
+                R.id.add_spot_to_first -> addFirst()
                 R.id.add_spot_to_last -> addLast(1)
                 R.id.remove_spot_from_first -> removeFirst(1)
                 R.id.remove_spot_from_last -> removeLast(1)
@@ -176,11 +203,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun addFirst(size: Int) {
+    private fun addFirst() {
         val myIntent = Intent(this@MainActivity, AddEventForm::class.java)
         startActivity(myIntent)
-
-        finish()
     }
 
     private fun addLast(size: Int) {
