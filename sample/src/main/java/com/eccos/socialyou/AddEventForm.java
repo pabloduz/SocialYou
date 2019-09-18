@@ -47,17 +47,11 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static android.os.SystemClock.sleep;
 
 public class AddEventForm extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -199,21 +193,18 @@ public class AddEventForm extends AppCompatActivity {
                                 //Getting reference to Firebase
                                 myFirebaseRef = new Firebase("https://socialyou-be6cf.firebaseio.com/");
 
-                                //Saving all info into the Firebase
                                 Map mInformation = new HashMap();
 
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                //mInformation.put("user", userId);
 
-                                String strTitle= title.getText().toString(); String strDate= date.getText().toString(); String strDescription= description.getText().toString();
-
-                                mInformation.put("title", strTitle); mInformation.put("date", strDate); mInformation.put("description", strDescription);
-
+                                //Saving all data with FireBase
+                                mInformation.put("title", title.getText().toString()); mInformation.put("date", date.getText().toString()); mInformation.put("time", time.getText().toString()); mInformation.put("description", description.getText().toString());
                                 Firebase fb = myFirebaseRef.child("events").push();
                                 fb.setValue(mInformation);
 
                                 String key= fb.getKey();
 
+                                //Creating a location node with GeoFire
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/locations");
                                 GeoFire geoFire = new GeoFire(ref);
 
@@ -221,17 +212,17 @@ public class AddEventForm extends AppCompatActivity {
                                     @Override
                                     public void onComplete(String key, DatabaseError error) {
                                         if (error != null) {
-                                            System.err.println("There was an error saving the location to GeoFire: " + error);
+                                            Log.e(TAG, "There was an error saving the location to GeoFire: " + error);
                                         } else {
-                                            System.out.println("Location saved on server successfully!");
+                                            Log.e(TAG, "Location saved on server successfully!");
                                         }
                                     }
                                 });
 
-                                //Create a node for users of the event
+                                //Creating a node for event's attendees
                                 myFirebaseRef.child("attendees").child(key).push().setValue(userId);
 
-                                //Store the image with the same key
+                                //Uploading the event image with FireBase Storage
                                 storeImageFile(key);
 
 //                                sleep(150);

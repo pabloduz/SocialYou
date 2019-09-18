@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -22,6 +23,17 @@ import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.navigation.NavigationView
 import com.eccos.socialyou.cardstackview.*
 import com.firebase.client.Firebase
+import com.firebase.client.FirebaseError
+import com.firebase.client.ValueEventListener
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQueryDataEventListener
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -31,7 +43,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private val adapter by lazy { CardStackAdapter(createSpots()) }
     private val myLocationPermissionRequest = 101
+    private val tag = "MainActivity"
 
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var locationCallback: LocationCallback? = null
+    private var locationRequest: LocationRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +62,16 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         when (requestCode) {
             myLocationPermissionRequest ->
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Firebase.setAndroidContext(this)
                     setContentView(R.layout.activity_main)
                     setupNavigation()
                     setupCardStackView()
                     setupButton()
+
+                    Firebase.setAndroidContext(this)
+
+
+                    createLocationRequest()
+                    startLocationUpdates()
 
 
                 } else {
@@ -58,6 +79,151 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                     finish()
                 }
         }
+    }
+
+    private fun createLocationRequest() {
+
+        var locationRequestLocal = LocationRequest.create()
+        locationRequestLocal.smallestDisplacement = 1f
+        locationRequestLocal.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequestLocal)
+
+        locationRequest = locationRequestLocal;
+
+        val client = LocationServices.getSettingsClient(this)
+        client.checkLocationSettings(builder.build())
+    }
+
+    private fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            var fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    if (locationResult == null) {
+                        return
+                    }
+
+                    for (location in locationResult.locations) {
+                        // Update UI with location data
+                        val myLocation = LatLng(location.latitude, location.longitude)
+
+                        getSpots(myLocation)
+
+                    }
+                }
+            }
+
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback, null/* Looper */)
+
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET), myLocationPermissionRequest)
+            }
+        }
+    }
+
+    private fun getSpots(myLocation: LatLng) {
+        val ref = FirebaseDatabase.getInstance().getReference("/locations")
+
+//        Log.e(tag, "${myLocation.latitude} and ${myLocation.longitude}")
+
+        val geoFire = GeoFire(ref)
+
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 5.00)
+
+        geoQuery.addGeoQueryDataEventListener(object : GeoQueryDataEventListener {
+
+            override fun onDataEntered(dataSnapshot: DataSnapshot, location: GeoLocation) {
+                Log.e("TAG", "Event found near you.")
+
+                val key = dataSnapshot.key
+
+                showSpots(key)
+            }
+
+            override fun onDataExited(dataSnapshot: DataSnapshot) {
+                // ...
+            }
+
+            override fun onDataMoved(dataSnapshot: DataSnapshot, location: GeoLocation) {
+                // ...
+            }
+
+
+            override fun onDataChanged(dataSnapshot: DataSnapshot, location: GeoLocation) {
+
+            }
+
+            override fun onGeoQueryReady() {
+                // ...
+            }
+
+            override fun onGeoQueryError(error: DatabaseError) {
+                Log.e(tag, "$error")
+            }
+
+        })
+    }
+
+    fun showSpots(key: String?) {
+        try {
+            //Get the DataSnapshot key
+
+            val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+            val ref = myFirebaseRef.child("events").child(key!!)
+
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
+
+                    val data = dataSnapshot.value as Map<*, *>
+
+                    val title = data["title"] as String
+                    val date = data["date"] as String
+                    val time = data["time"] as String
+                    val description = data["description"] as String
+
+
+                    var storageRef = FirebaseStorage.getInstance().reference
+
+
+                    storageRef.child(key).downloadUrl.addOnSuccessListener {
+                        // Got the download URL for 'users/me/profile.png'
+                        var url= it.toString()
+
+                        addLast(1, title, date, time, description, url)
+
+                    }.addOnFailureListener {
+                        // Handle any errors
+                    }
+                }
+
+                override fun onCancelled(firebaseError: FirebaseError) {}
+            })
+
+        } catch (ex: Exception) {
+
+            Log.e(tag, "FireBase exception: " + ex.message)
+        }
+
+    }
+
+
+    /**
+     * Executed when the process is running on the background.
+     */
+    public override fun onPause() {
+        super.onPause()
+
+        stopLocationUpdates()
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient?.let{ it.removeLocationUpdates(locationCallback)}
     }
 
 
@@ -89,12 +255,12 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     override fun onCardAppeared(view: View, position: Int) {
-        val textView = view.findViewById<TextView>(R.id.item_name)
+        val textView = view.findViewById<TextView>(R.id.item_title)
         Log.d("CardStackView", "onCardAppeared: ($position) ${textView.text}")
     }
 
     override fun onCardDisappeared(view: View, position: Int) {
-        val textView = view.findViewById<TextView>(R.id.item_name)
+        val textView = view.findViewById<TextView>(R.id.item_title)
         Log.d("CardStackView", "onCardDisappeared: ($position) ${textView.text}")
     }
 
@@ -114,7 +280,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             when (menuItem.itemId) {
                 R.id.reload -> reload()
                 R.id.add_spot_to_first -> addFirst()
-                R.id.add_spot_to_last -> addLast(1)
                 R.id.remove_spot_from_first -> removeFirst(1)
                 R.id.remove_spot_from_last -> removeLast(1)
                 R.id.replace_first_spot -> replace()
@@ -208,11 +373,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         startActivity(myIntent)
     }
 
-    private fun addLast(size: Int) {
+    private fun addLast(size: Int, title: String, date: String, time: String, description: String, url: String) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
             addAll(old)
-            addAll(List(size) { createSpot() })
+            addAll(List(size) { createSpot(title, date, time, description, url) })
         }
         val callback = SpotDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
@@ -257,14 +422,14 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun replace() {
-        val old = adapter.getSpots()
-        val new = mutableListOf<Spot>().apply {
-            addAll(old)
-            removeAt(manager.topPosition)
-            add(manager.topPosition, createSpot())
-        }
-        adapter.setSpots(new)
-        adapter.notifyItemChanged(manager.topPosition)
+//        val old = adapter.getSpots()
+//        val new = mutableListOf<Spot>().apply {
+//            addAll(old)
+//            removeAt(manager.topPosition)
+//            add(manager.topPosition, createSpot(title, date, time, description))
+//        }
+//        adapter.setSpots(new)
+//        adapter.notifyItemChanged(manager.topPosition)
     }
 
     private fun swap() {
@@ -282,28 +447,33 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun createSpot(): Spot {
+    private fun createSpot(title: String, date: String, time: String, description: String, url: String): Spot {
         return Spot(
-                name = "Yasaka Shrine",
-                city = "Kyoto",
-                url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"
+                title = title,
+                date = date,
+                time = time,
+                description = description,
+                url = url
         )
     }
 
     private fun createSpots(): List<Spot> {
         val spots = ArrayList<Spot>()
-        spots.add(Spot(name = "My Event", city = "Floripa", url = ""))
-        spots.add(Spot(name = "Yasaka Shrine", city = "Kyoto", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
-        spots.add(Spot(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
-        spots.add(Spot(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
-        spots.add(Spot(name = "Brooklyn Bridge", city = "New York", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
-        spots.add(Spot(name = "Empire State Building", city = "New York", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
-        spots.add(Spot(name = "The statue of Liberty", city = "New York", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
-        spots.add(Spot(name = "Louvre Museum", city = "Paris", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
-        spots.add(Spot(name = "Eiffel Tower", city = "Paris", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
-        spots.add(Spot(name = "Big Ben", city = "London", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
-        spots.add(Spot(name = "Great Wall of China", city = "China", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
+        spots.add(Spot(title = "Welcome", date = "", time = "", description = "", url = "https://firebasestorage.googleapis.com/v0/b/socialyou-be6cf.appspot.com/o/-Lp4flO1EZ0YmtE62k6N?alt=media&token=b7e5b037-1d61-455e-b596-7bd4456e3a53"))
         return spots
     }
 
 }
+
+
+//        spots.add(Spot(title = "Yasaka Shrine", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
+//        spots.add(Spot(title = "Fushimi Inari Shrine", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
+//        spots.add(Spot(title = "Bamboo Forest", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
+//        spots.add(Spot(title = "Brooklyn Bridge", date = "New York", time = "", description = "", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
+//        spots.add(Spot(title = "Empire State Building", date = "New York", time = "", description = "", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
+//        spots.add(Spot(title = "The statue of Liberty", date = "New York", time = "", description = "", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
+//        spots.add(Spot(title = "Louvre Museum", date = "Paris", time = "", description = "", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
+//        spots.add(Spot(title = "Eiffel Tower", date = "Paris", time = "", description = "", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
+//        spots.add(Spot(title = "Big Ben", date = "London", time = "", description = "", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
+//        spots.add(Spot(title = "Great Wall of China", date = "China", time = "", description = "", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
+

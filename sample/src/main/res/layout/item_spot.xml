@@ -29,7 +29,7 @@
         android:background="@drawable/gradation_black">
 
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -37,7 +37,7 @@
             android:textSize="26sp"/>
 
         <TextView
-            android:id="@+id/item_city"
+            android:id="@+id/item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
