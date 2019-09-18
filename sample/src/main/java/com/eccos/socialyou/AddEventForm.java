@@ -9,14 +9,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -61,6 +61,8 @@ import static android.os.SystemClock.sleep;
 
 public class AddEventForm extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
+
+    private static final int MY_WRITE_PERMISSION_REQUEST = 101;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -87,10 +89,8 @@ public class AddEventForm extends AppCompatActivity {
         //Getting references to Firebase
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        title = findViewById(R.id.title);
-        date = findViewById(R.id.date);
-        time = findViewById(R.id.time);
-        description = findViewById(R.id.description);
+        title = findViewById(R.id.title); date = findViewById(R.id.date); time = findViewById(R.id.time); description = findViewById(R.id.description);
+
         date.setInputType(InputType.TYPE_NULL);
 
         startLocationUpdates();
@@ -100,7 +100,11 @@ public class AddEventForm extends AppCompatActivity {
         final Button chooseImage = (Button) findViewById(R.id.choose_image);
         chooseImage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                openFileChooser();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_WRITE_PERMISSION_REQUEST);
+            }else{
+                showSnackbar(R.string.grant_permission);
+            }
             }
         });
 
@@ -115,82 +119,47 @@ public class AddEventForm extends AppCompatActivity {
                     } else {
                         showSnackbar(R.string.select_image);
                     }
-
                 }
             }
         });
+
     }
 
-    private void saveToFirebase() {
-        try {
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(AddEventForm.this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(final Location location) {
-                            // Got last known location. In some rare situations this can be null.
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-                            if (location != null) {
-                                //final LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        switch (requestCode) {
+            case MY_WRITE_PERMISSION_REQUEST:
 
-                                Log.e("Cord", "Latitude: " + location.getLatitude() + " Longitude: " + location.getLongitude());
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //permission was granted do nothing and carry on
+                    openFileChooser();
+                }
 
-                                //Getting reference to Firebase
-                                myFirebaseRef = new Firebase("https://socialyou-be6cf.firebaseio.com/");
-
-                                //Saving all info into the Firebase
-                                Map mInformation = new HashMap();
-
-                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                mInformation.put("user", userId);
-
-                                String strTitle= title.getText().toString(); String strDate= date.getText().toString(); String strDescription= description.getText().toString();
-
-                                mInformation.put("title", strTitle); mInformation.put("date", strDate); mInformation.put("description", strDescription);
-
-                                String path= strDate + ":" + strTitle + ":" + userId;
-                                storeImageFile(path);
-
-                                Firebase fb = myFirebaseRef.child("events").push();
-                                fb.setValue(mInformation);
-
-                                String key= fb.getKey();
-
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/locations");
-                                GeoFire geoFire = new GeoFire(ref);
-
-                                geoFire.setLocation(key, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-                                    @Override
-                                    public void onComplete(String key, DatabaseError error) {
-                                        if (error != null) {
-                                            System.err.println("There was an error saving the location to GeoFire: " + error);
-                                        } else {
-                                            System.out.println("Location saved on server successfully!");
-                                        }
-                                    }
-                                });
-
-
-//                                sleep(150);
-//
-//                                Intent myIntent = new Intent(AddNetForm.this, MainActivity.class);
-//                                startActivity(myIntent);
-
-                            } else {
-                                Log.e(TAG, "Location is null.");
-
-                                View contextView = AddEventForm.this.findViewById(android.R.id.content);
-
-                                Snackbar.make(contextView, R.string.location_null, Snackbar.LENGTH_LONG)
-                                        .show();
-                            }
-                        }
-                    });
-
-        } catch (Exception ex) {
-            Log.e(TAG, "Exception: " + ex);
+                break;
         }
     }
 
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+
+            showSnackbar(R.string.image_selected);
+
+        }
+    }
 
     private boolean checkTextFields() {
         if(TextUtils.isEmpty(title.getText())) {
@@ -214,47 +183,118 @@ public class AddEventForm extends AppCompatActivity {
     }
 
 
-    private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
+    private void saveToFirebase() {
+        try {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(AddEventForm.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(final Location location) {
+                            // Got last known location. In some rare situations this can be null.
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+                            if (location != null) {
+                                //final LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            mImageUri = data.getData();
+                                Log.e("Cord", "Latitude: " + location.getLatitude() + " Longitude: " + location.getLongitude());
 
-            showSnackbar(R.string.image_selected);
+                                //Getting reference to Firebase
+                                myFirebaseRef = new Firebase("https://socialyou-be6cf.firebaseio.com/");
 
+                                //Saving all info into the Firebase
+                                Map mInformation = new HashMap();
+
+                                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                //mInformation.put("user", userId);
+
+                                String strTitle= title.getText().toString(); String strDate= date.getText().toString(); String strDescription= description.getText().toString();
+
+                                mInformation.put("title", strTitle); mInformation.put("date", strDate); mInformation.put("description", strDescription);
+
+                                Firebase fb = myFirebaseRef.child("events").push();
+                                fb.setValue(mInformation);
+
+                                String key= fb.getKey();
+
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/locations");
+                                GeoFire geoFire = new GeoFire(ref);
+
+                                geoFire.setLocation(key, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                                    @Override
+                                    public void onComplete(String key, DatabaseError error) {
+                                        if (error != null) {
+                                            System.err.println("There was an error saving the location to GeoFire: " + error);
+                                        } else {
+                                            System.out.println("Location saved on server successfully!");
+                                        }
+                                    }
+                                });
+
+                                //Create a node for users of the event
+                                myFirebaseRef.child("attendees").child(key).push().setValue(userId);
+
+                                //Store the image with the same key
+                                storeImageFile(key);
+
+//                                sleep(150);
+//
+//                                Intent myIntent = new Intent(AddNetForm.this, MainActivity.class);
+//                                startActivity(myIntent);
+
+                            } else {
+                                Log.e(TAG, "Location is null.");
+
+                                View contextView = AddEventForm.this.findViewById(android.R.id.content);
+
+                                Snackbar.make(contextView, R.string.location_null, Snackbar.LENGTH_LONG)
+                                        .show();
+                            }
+                        }
+                    });
+
+        } catch (Exception ex) {
+            Log.e(TAG, "Exception: " + ex);
         }
     }
 
     private void storeImageFile(String path) {
-        Uri file = mImageUri;
-        StorageReference riversRef = storageRef.child(path);
+//        Uri file = mImageUri;
+        StorageReference ref = storageRef.child(path);
 
-        riversRef.putFile(file)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
-                        Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-                        Log.e(TAG, "" + downloadUrl);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        // ...
-                    }
-                });
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mImageUri);
+
+            Bitmap resized = Bitmap.createScaledBitmap(bitmap, 600, 800, true);
+
+            Uri resizedUri = getImageUri(this, resized);
+
+            ref.putFile(resizedUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // Get a URL to the uploaded content
+                            Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+                            Log.e(TAG, "" + downloadUrl);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            // ...
+                        }
+                    });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG,100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage,
+                "SocialYou - What and Who is Next to Me", "Find more about the app on the PlayStore.");
+        return Uri.parse(path); }
+
 
     private void setDialogCalendar() {
         final Calendar myCalendar = Calendar.getInstance();
@@ -345,7 +385,6 @@ public class AddEventForm extends AppCompatActivity {
 
 
     private void updateLabel(Calendar myCalendar) {
-
         String myFormat = "MM/dd/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
@@ -379,13 +418,6 @@ public class AddEventForm extends AppCompatActivity {
         }
     }
 
-    private void showSnackbar(int text){
-        View contextView = findViewById(android.R.id.content);
-
-        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
-                .show();
-    }
-
     /**
      * Called after the start and in between pauses and running.
      */
@@ -407,5 +439,13 @@ public class AddEventForm extends AppCompatActivity {
         if(fusedLocationClient != null){
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }
+    }
+
+
+    private void showSnackbar(int text){
+        View contextView = findViewById(android.R.id.content);
+
+        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
+                .show();
     }
 }

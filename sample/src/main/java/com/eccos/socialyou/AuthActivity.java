@@ -22,6 +22,7 @@ public class AuthActivity extends AppCompatActivity {
     // Choose an arbitrary request code value
     private static final int RC_SIGN_IN = 123;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,7 @@ public class AuthActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             // already signed in
             startActivity(this.createIntent());
+            finish();
 
         } else {
             // not signed in
@@ -58,7 +60,8 @@ public class AuthActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 startActivity(this.createIntent());
-                finish();
+                finish(); AuthActivity.this.finish();
+
             } else {
                 // Sign in failed
                 if (response == null) {

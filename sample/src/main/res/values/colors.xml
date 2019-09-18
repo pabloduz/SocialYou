@@ -2,11 +2,11 @@
 <resources>
     <color name="colorPrimary">#181818</color>
     <color name="colorPrimaryDark">#0A0A0A</color>
-    <color name="colorAccent">#303F9F</color>
+    <color name="colorAccent">#CC303F9F</color>
 
 
     <color name="white">#FFFFFF</color>
-    <color name="button_color">#DBDBDB</color>
+    <color name="button_color">#303F9F</color>
 </resources>
 
-    <!--<color name="colorAccent">#303F9F</color>-->
+    <!--<color name="button_color">#DBDBDB</color>-->

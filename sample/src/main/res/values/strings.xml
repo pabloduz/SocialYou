@@ -32,5 +32,7 @@
     <string name="select_image">Select an image first!</string>
     <string name="image_selected">Image loaded!</string>
     <string name="time">Time</string>
+    <string name="grant_location">SocialYou requires location permission.</string>
+    <string name="grant_permission">Grant permission to continue.</string>
 
 </resources>

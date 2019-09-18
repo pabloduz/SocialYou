@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
 
                 } else {
-                    Toast.makeText(this, "This app requires location permissions to be granted.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.grant_location, Toast.LENGTH_LONG).show()
                     finish()
                 }
         }
@@ -292,6 +292,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createSpots(): List<Spot> {
         val spots = ArrayList<Spot>()
+        spots.add(Spot(name = "My Event", city = "Floripa", url = ""))
         spots.add(Spot(name = "Yasaka Shrine", city = "Kyoto", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
         spots.add(Spot(name = "Fushimi Inari Shrine", city = "Kyoto", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
         spots.add(Spot(name = "Bamboo Forest", city = "Kyoto", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
