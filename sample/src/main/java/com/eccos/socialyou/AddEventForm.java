@@ -102,8 +102,6 @@ public class AddEventForm extends AppCompatActivity {
             public void onClick(View v) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_WRITE_PERMISSION_REQUEST);
-            }else{
-                showSnackbar(R.string.grant_permission);
             }
             }
         });
@@ -135,6 +133,8 @@ public class AddEventForm extends AppCompatActivity {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //permission was granted do nothing and carry on
                     openFileChooser();
+                }else{
+                    showSnackbar(R.string.grant_storage);
                 }
 
                 break;
