@@ -12,4 +12,14 @@ data class Spot(
     companion object {
         private var counter = 0L
     }
+
+    data class Spot(
+            val id: Long = 0,
+            val key: String = "",
+            val title: String = "",
+            val date: String = "",
+            val time:  String = "",
+            val description:  String = "",
+            val url:  String = ""
+    )
 }

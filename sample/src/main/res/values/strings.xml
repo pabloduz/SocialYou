@@ -9,8 +9,8 @@
     <string name="close_drawer">Close drawer</string>
     <string name="reload">Reload</string>
     <string name="add_event">Create an event</string>
+    <string name="myEvents">My Events</string>
     <string name="add_spot_to_last">Add spot to last</string>
-    <string name="remove_spot_from_first">Remove spot from first</string>
     <string name="remove_spot_from_last">Remove spot from last</string>
     <string name="replace_first_spot">Replace first spot</string>
     <string name="swap_first_for_last">Swap first for last</string>
@@ -34,6 +34,7 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">You don\'t attend to any event yet!</string>
+    <string name="no_event">You don\'t have any event yet!</string>
+    <string name="my_events">My Events</string>
 
 </resources>

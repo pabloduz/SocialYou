@@ -2,6 +2,7 @@ package com.eccos.socialyou;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,19 @@ import java.util.List;
 
 public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
-    List<Spot> SpotList;
+    List<Spot> spotList;
     Context context;
 
-    public SpotAdapter(List<Spot>SpotList)
+    public SpotAdapter(List<Spot>spList)
     {
-        this.SpotList = SpotList;
+        this.spotList = spList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        Log.e("SpotAdapter", "Entrou");
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_event,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         context = parent.getContext();
@@ -34,12 +38,17 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Spot item = SpotList.get(position);
+        Spot item = spotList.get(position);
+
+        Log.e("SpotAdapter", "Entrou");
 
         if(position == 0){
-            holder.header.setText("Statistics for your questions");
+            holder.header.setText(R.string.my_events);
             holder.header.setPadding(0,0,0,50);
         }
+
+        holder.title.setText(item.getTitle());
+        holder.date.setText(item.getDate());
 
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -54,42 +63,40 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return spotList.size();
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView header;
-        TextView firstText;
-        TextView secondText;
+        TextView title;
+        TextView date;
         CardView cardView;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
             header =  itemView.findViewById(R.id.header);
-            firstText = itemView.findViewById(R.id.firstText);
-            secondText = itemView.findViewById(R.id.secondText);
+            title = itemView.findViewById(R.id.title);
+            date = itemView.findViewById(R.id.date);
             cardView = itemView.findViewById(R.id.cv);
 
             cardView.setRadius(15);
 
             cardView.setPadding(25, 25, 25, 25);
 
-            cardView.setCardBackgroundColor(Color.RED);
+            cardView.setCardBackgroundColor(Color.BLACK);
 
             cardView.setMaxCardElevation(30);
 
-            cardView.setMaxCardElevation(6);
+            title.setTextColor(Color.WHITE);
 
-            firstText.setTextColor(Color.WHITE);
+            title.setPadding(25,25,25,25);
 
-            firstText.setPadding(25,25,25,25);
+            date.setTextColor(Color.WHITE);
 
-            secondText.setTextColor(Color.WHITE);
-
-            secondText.setPadding(25,25,25,25);
+            date.setPadding(25,25,25,25);
 
 
         }

@@ -433,21 +433,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun removeFirst(size: Int) {
-        if (adapter.getSpots().isEmpty()) {
-            return
-        }
-
-        val old = adapter.getSpots()
-        val new = mutableListOf<Spot>().apply {
-            addAll(old)
-            for (i in 0 until size) {
-                removeAt(manager.topPosition)
-            }
-        }
-        val callback = SpotDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
-        result.dispatchUpdatesTo(adapter)
+        val myIntent = Intent(this@MainActivity, MyEvents::class.java)
+        startActivity(myIntent)
     }
 
     private fun removeLast(size: Int) {

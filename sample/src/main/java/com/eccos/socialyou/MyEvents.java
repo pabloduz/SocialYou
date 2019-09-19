@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
@@ -32,6 +33,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import static android.os.SystemClock.sleep;
 
 public class MyEvents extends AppCompatActivity {
     private static SharedPreferences pref;
@@ -90,7 +93,7 @@ public class MyEvents extends AppCompatActivity {
                                 StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
 
-                                storageRef.child("key").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                storageRef.child(key).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         // Got the download URL for 'users/me/profile.png'
@@ -100,6 +103,8 @@ public class MyEvents extends AppCompatActivity {
                                         Spot spot = new Spot(1, key, title, date, time, description, url);
 
                                         spots.add(spot);
+
+                                        Log.e(tag, "Spot added");
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -111,31 +116,41 @@ public class MyEvents extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(FirebaseError firebaseError) {
-
                             }
                         });
                     }
                 }
 
-                if (spots.isEmpty()){
-                    Log.e("TAG", "Empty");
-                    createCardView();
 
-                }else{
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after X ms
+                        if (spots.isEmpty()){
+                            Log.e(tag, "Empty");
+                            createCardView();
 
-                    spotAdapter = new SpotAdapter(spots);
 
-                    recyclerView = findViewById(R.id.rv);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(spotAdapter);
-                }
+                        }else{
+                            Log.e(tag, "Not empty");
+
+                            spotAdapter = new SpotAdapter(spots);
+
+                            recyclerView = findViewById(R.id.rv);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                            recyclerView.setAdapter(spotAdapter);
+                        }
+                    }
+                }, 1500);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
             }
+
         });
 
         // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
@@ -167,11 +182,9 @@ public class MyEvents extends AppCompatActivity {
 
         cardview.setPadding(25, 25, 25, 25);
 
-        cardview.setCardBackgroundColor(Color.RED);
+        cardview.setCardBackgroundColor(Color.BLACK);
 
         cardview.setMaxCardElevation(30);
-
-        cardview.setMaxCardElevation(6);
 
         TextView textview = new TextView(this);
 
