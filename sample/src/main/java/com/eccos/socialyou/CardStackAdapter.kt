@@ -1,5 +1,6 @@
 package com.eccos.socialyou
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 class CardStackAdapter(
-        private var spots: List<Spot> = emptyList()
-) : RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
+        private var spots: List<Spot> = emptyList()) : RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,6 +32,11 @@ class CardStackAdapter(
 
     override fun getItemCount(): Int {
         return spots.size
+    }
+
+    fun getSpotId(position : Int): String {
+        val spot = spots[position]
+        return spot.key
     }
 
     fun setSpots(spots: List<Spot>) {

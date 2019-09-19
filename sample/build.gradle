@@ -50,6 +50,8 @@ dependencies {
     implementation 'com.firebase:geofire-android:3.0.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

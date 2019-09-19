@@ -2,6 +2,7 @@ package com.eccos.socialyou
 
 data class Spot(
         val id: Long = counter++,
+        val key: String,
         val title: String,
         val date: String,
         val time: String,

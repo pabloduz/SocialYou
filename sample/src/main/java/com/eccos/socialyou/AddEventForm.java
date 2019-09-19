@@ -74,6 +74,7 @@ public class AddEventForm extends AppCompatActivity {
 
     private EditText title; private EditText date; private EditText time; private EditText description;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +112,11 @@ public class AddEventForm extends AppCompatActivity {
                     } else {
                         showSnackbar(R.string.select_image);
                     }
+
+                    Intent myIntent= new Intent(AddEventForm.this, MainActivity.class);
+                    startActivity(myIntent);
+
+                    finish();
                 }
             }
         });

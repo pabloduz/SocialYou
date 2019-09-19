@@ -2,9 +2,12 @@ package com.eccos.socialyou
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -34,6 +37,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -49,11 +54,33 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var locationCallback: LocationCallback? = null
     private var locationRequest: LocationRequest? = null
 
+    private var spotsSwiped = ArrayList<String>()
+    private var arrayList = ArrayList<String>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), myLocationPermissionRequest)
-        }
+        setContentView(R.layout.activity_main)
+
+        setupNavigation()
+        setupCardStackView()
+        setupButton()
+
+        Firebase.setAndroidContext(this)
+
+        var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        //Start with a value to avoid null pointer exception when no events swiped
+        arrayList.add("null")
+        val list = Gson().toJson(arrayList)
+
+        val json = pref.getString("spotsSwiped", list)
+
+        val collectionType = object : TypeToken<ArrayList<String>>() {}.type
+        spotsSwiped = Gson().fromJson(json, collectionType)
+
+        createLocationRequest()
+        startLocationUpdates()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -62,17 +89,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         when (requestCode) {
             myLocationPermissionRequest ->
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setContentView(R.layout.activity_main)
-                    setupNavigation()
-                    setupCardStackView()
-                    setupButton()
-
-                    Firebase.setAndroidContext(this)
-
-
-                    createLocationRequest()
                     startLocationUpdates()
-
 
                 } else {
                     Toast.makeText(this, R.string.grant_location, Toast.LENGTH_LONG).show()
@@ -82,7 +99,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun createLocationRequest() {
-
         var locationRequestLocal = LocationRequest.create()
         locationRequestLocal.smallestDisplacement = 1f
         locationRequestLocal.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -121,7 +137,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET), myLocationPermissionRequest)
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), myLocationPermissionRequest)
             }
         }
     }
@@ -133,16 +149,18 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val geoFire = GeoFire(ref)
 
-        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 5.00)
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 100000.00)
 
         geoQuery.addGeoQueryDataEventListener(object : GeoQueryDataEventListener {
 
             override fun onDataEntered(dataSnapshot: DataSnapshot, location: GeoLocation) {
-                Log.e("TAG", "Event found near you.")
-
                 val key = dataSnapshot.key
 
-                showSpots(key)
+                if(!spotsSwiped.contains(key)) {
+                    Log.e("TAG", "Event found near you.")
+
+                    showSpots(key)
+                }
             }
 
             override fun onDataExited(dataSnapshot: DataSnapshot) {
@@ -195,7 +213,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Got the download URL for 'users/me/profile.png'
                         var url= it.toString()
 
-                        addLast(1, title, date, time, description, url)
+                        addLast(1, key, title, date, time, description, url)
 
                     }.addOnFailureListener {
                         // Handle any errors
@@ -241,9 +259,22 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     override fun onCardSwiped(direction: Direction) {
         Log.d("CardStackView", "onCardSwiped: p = ${manager.topPosition}, d = $direction")
-        if (manager.topPosition == adapter.itemCount - 5) {
-            paginate()
-        }
+
+        val key= adapter.getSpotId(manager.topPosition - 1)
+
+        Log.d("CardStackView", "onCardSwiped: key = $key")
+        spotsSwiped.remove("null")
+        spotsSwiped.add(key)
+
+        var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val json = Gson().toJson(spotsSwiped)
+        pref.edit().putString("spotsSwiped", json).commit()
+
+
+//        if (manager.topPosition == adapter.itemCount - 5) {
+//            paginate()
+//        }
     }
 
     override fun onCardRewound() {
@@ -373,11 +404,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         startActivity(myIntent)
     }
 
-    private fun addLast(size: Int, title: String, date: String, time: String, description: String, url: String) {
+    private fun addLast(size: Int, key: String, title: String, date: String, time: String, description: String, url: String) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
             addAll(old)
-            addAll(List(size) { createSpot(title, date, time, description, url) })
+            addAll(List(size) { createSpot(key, title, date, time, description, url) })
         }
         val callback = SpotDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
@@ -447,8 +478,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun createSpot(title: String, date: String, time: String, description: String, url: String): Spot {
+    private fun createSpot(key: String, title: String, date: String, time: String, description: String, url: String): Spot {
         return Spot(
+                key= key,
                 title = title,
                 date = date,
                 time = time,
@@ -459,7 +491,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createSpots(): List<Spot> {
         val spots = ArrayList<Spot>()
-        spots.add(Spot(title = "Welcome", date = "", time = "", description = "", url = "https://firebasestorage.googleapis.com/v0/b/socialyou-be6cf.appspot.com/o/-Lp4flO1EZ0YmtE62k6N?alt=media&token=b7e5b037-1d61-455e-b596-7bd4456e3a53"))
+        //spots.add(Spot(title = "Welcome", date = "", time = "", description = "", url = "https://firebasestorage.googleapis.com/v0/b/socialyou-be6cf.appspot.com/o/-Lp4flO1EZ0YmtE62k6N?alt=media&token=b7e5b037-1d61-455e-b596-7bd4456e3a53"))
         return spots
     }
 
