@@ -34,5 +34,6 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
+    <string name="no_event">You don\'t attend to any event yet!</string>
 
 </resources>

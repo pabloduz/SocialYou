@@ -30,7 +30,9 @@
         <activity android:name="com.eccos.socialyou.AddEventForm"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name="com.eccos.socialyou.MyEvents"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 

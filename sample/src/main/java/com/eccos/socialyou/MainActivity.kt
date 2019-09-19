@@ -1,6 +1,7 @@
 package com.eccos.socialyou
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
@@ -31,6 +32,7 @@ import com.firebase.client.ValueEventListener
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryDataEventListener
+import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private val adapter by lazy { CardStackAdapter(createSpots()) }
     private val myLocationPermissionRequest = 101
+    private val eventCreated = 10
     private val tag = "MainActivity"
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -56,6 +59,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private var spotsSwiped = ArrayList<String>()
     private var arrayList = ArrayList<String>()
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -270,11 +275,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val json = Gson().toJson(spotsSwiped)
         pref.edit().putString("spotsSwiped", json).commit()
-
-
-//        if (manager.topPosition == adapter.itemCount - 5) {
-//            paginate()
-//        }
     }
 
     override fun onCardRewound() {
@@ -401,8 +401,24 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun addFirst() {
         val myIntent = Intent(this@MainActivity, AddEventForm::class.java)
-        startActivity(myIntent)
+        startActivityForResult(myIntent, eventCreated)
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Check which request we're responding to
+        if (requestCode == eventCreated) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+
+                Log.e(tag, "onActivityResult called!")
+                finish()
+            }
+        }
+    }
+
+
+
 
     private fun addLast(size: Int, key: String, title: String, date: String, time: String, description: String, url: String) {
         val old = adapter.getSpots()
@@ -472,11 +488,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             add(manager.topPosition, last)
             add(first)
         }
+
         val callback = SpotDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
+
 
     private fun createSpot(key: String, title: String, date: String, time: String, description: String, url: String): Spot {
         return Spot(

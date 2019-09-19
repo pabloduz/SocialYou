@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -112,11 +113,6 @@ public class AddEventForm extends AppCompatActivity {
                     } else {
                         showSnackbar(R.string.select_image);
                     }
-
-                    Intent myIntent= new Intent(AddEventForm.this, MainActivity.class);
-                    startActivity(myIntent);
-
-                    finish();
                 }
             }
         });
@@ -226,15 +222,18 @@ public class AddEventForm extends AppCompatActivity {
                                 });
 
                                 //Creating a node for event's attendees
-                                myFirebaseRef.child("attendees").child(key).push().setValue(userId);
+                                myFirebaseRef.child("attendees").child(key).child(userId).setValue(true);
 
                                 //Uploading the event image with FireBase Storage
                                 storeImageFile(key);
 
-//                                sleep(150);
-//
-//                                Intent myIntent = new Intent(AddNetForm.this, MainActivity.class);
-//                                startActivity(myIntent);
+                                Intent myIntent= new Intent(AddEventForm.this, MyEvents.class);
+                                startActivity(myIntent);
+
+                                Intent intent=new Intent();
+                                setResult(Activity.RESULT_OK, intent);
+
+                                finish();
 
                             } else {
                                 Log.e(TAG, "Location is null.");
