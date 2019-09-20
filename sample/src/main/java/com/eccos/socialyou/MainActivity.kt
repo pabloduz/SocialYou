@@ -73,23 +73,26 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupCardStackView()
         setupButton()
 
-
         Firebase.setAndroidContext(this)
 
+        setupSpotsSwiped()
+
+        createLocationRequest()
+        startLocationUpdates()
+    }
+
+    private fun setupSpotsSwiped() {
         var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         //Start with a value to avoid null pointer exception when no events swiped
         arrayList.add("null")
         val list = Gson().toJson(arrayList)
-
         val json = pref.getString("spotsSwiped", list)
 
         val collectionType = object : TypeToken<ArrayList<String>>() {}.type
         spotsSwiped = Gson().fromJson(json, collectionType)
-
-        createLocationRequest()
-        startLocationUpdates()
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -134,8 +137,22 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Update UI with location data
                         val myLocation = LatLng(location.latitude, location.longitude)
 
-                        getSpots(myLocation)
+                        //Creating a user location node with GeoFire
+                        val ref = FirebaseDatabase.getInstance().getReference("/locations_")
+                        val geoFire = GeoFire(ref)
 
+                        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+                        geoFire.setLocation(userId, GeoLocation(location.getLatitude(), location.getLongitude())) { key, error ->
+                            if (error != null) {
+                                Log.e(tag, "There was an error saving the location to GeoFire: $error")
+                            } else {
+                                Log.e(tag, "Location saved on server successfully!")
+                            }
+                        }
+
+
+                        getSpots(myLocation)
                     }
                 }
             }
@@ -217,7 +234,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
 
                     storageRef.child(key).downloadUrl.addOnSuccessListener {
-                        // Got the download URL for 'users/me/profile.png'
+                        // Got the download URL
                         var url= it.toString()
 
                         var progressBar : ProgressBar = findViewById(R.id.progressBar)

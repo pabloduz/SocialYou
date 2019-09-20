@@ -52,69 +52,62 @@ public class MyEvents extends AppCompatActivity {
 
         final Firebase myFirebaseRef = new Firebase("https://socialyou-be6cf.firebaseio.com/");
 
-        final Firebase ref = myFirebaseRef.child("attendees");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        final Firebase ref = myFirebaseRef.child("users").child(userId);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Map data = (Map) ds.getValue();
-
                     String key = ds.getKey();
 
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Log.e(tag, "Create card view for");
 
-                    Log.e(tag, "User: " + userId);
+                    final Firebase refEvent = myFirebaseRef.child("events").child(key);
+                    refEvent.addListenerForSingleValueEvent(new ValueEventListener() {
 
+                        @Override
+                        public void onDataChange(DataSnapshot snap) {
+                            final String key= snap.getKey();
 
-                    if(ds.child(userId).exists()){
-                        Log.e(tag, "Create card view");
+                            Map data = (Map) snap.getValue();
 
-                        final Firebase refEvent = myFirebaseRef.child("events").child(key);
-                        refEvent.addListenerForSingleValueEvent(new ValueEventListener() {
+                            final String title= (String) data.get("title");
+                            final String date= (String) data.get("date");
+                            final String time= (String) data.get("time");
+                            final String description= (String) data.get("description");
 
-                            @Override
-                            public void onDataChange(DataSnapshot snap) {
-                                final String key= snap.getKey();
-
-                                Log.e(tag, "Event:" + key);
-                                Map data = (Map) snap.getValue();
-
-                                final String title= (String) data.get("title");
-                                final String date= (String) data.get("date");
-                                final String time= (String) data.get("time");
-                                final String description= (String) data.get("description");
-
-                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
 
-                                storageRef.child(key).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        // Got the download URL for 'users/me/profile.png'
-                                        String url = uri.toString();
+                            storageRef.child(key).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // Got the download URL for 'users/me/profile.png'
+                                    String url = uri.toString();
 
-                                        Spot spot = new Spot(1, key, title, date, time, description, url);
+                                    Spot spot = new Spot(1, key, title, date, time, description, url);
 
-                                        spots.add(spot);
+                                    spots.add(spot);
 
-                                        Log.e(tag, "Spot added");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Handle any errors
-                                    }
-                                });
-                            }
+                                    Log.e(tag, "Spot added");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });
+                        }
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        });
-                    }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
                 }
+
 
 
                 final Handler handler = new Handler();
