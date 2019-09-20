@@ -35,6 +35,7 @@ import com.firebase.geofire.GeoQueryDataEventListener
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -195,7 +196,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     fun showSpots(key: String?) {
         try {
             //Get the DataSnapshot key
-
             val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
             val ref = myFirebaseRef.child("events").child(key!!)
 
@@ -267,6 +267,34 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val key= adapter.getSpotId(manager.topPosition - 1)
 
+        var stringDirection= direction.toString()
+
+        if(stringDirection.equals("Right")){
+
+            insertAttendee(key)
+        }
+
+        //addSpotSwiped(key)
+
+    }
+
+    private fun insertAttendee(key: String) {
+        try {
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+            //Get the DataSnapshot key
+            val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+            myFirebaseRef.child("attendees").child(key!!).child(userId).setValue(true)
+
+        } catch (ex: Exception) {
+
+            Log.e(tag, "FireBase exception: " + ex.message)
+        }
+
+    }
+
+
+    private fun addSpotSwiped(key: String) {
         Log.d("CardStackView", "onCardSwiped: key = $key")
         spotsSwiped.remove("null")
         spotsSwiped.add(key)
@@ -275,7 +303,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val json = Gson().toJson(spotsSwiped)
         pref.edit().putString("spotsSwiped", json).commit()
+
     }
+
+
 
     override fun onCardRewound() {
         Log.d("CardStackView", "onCardRewound: ${manager.topPosition}")
