@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,7 +95,6 @@ public class MyEvents extends AppCompatActivity {
                                         // Got the download URL for 'users/me/profile.png'
                                         String url = uri.toString();
 
-
                                         Spot spot = new Spot(1, key, title, date, time, description, url);
 
                                         spots.add(spot);
@@ -121,6 +121,9 @@ public class MyEvents extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        ProgressBar progressBar= findViewById(R.id.progressBar);
+                        progressBar.setVisibility(View.GONE);
+
                         //Do something after X ms
                         if (spots.isEmpty()) {
                             Log.e(tag, "Empty");
@@ -137,7 +140,7 @@ public class MyEvents extends AppCompatActivity {
                         recyclerView.setAdapter(spotAdapter);
 
                 }
-                }, 3000);
+                }, 1000);
 
             }
 

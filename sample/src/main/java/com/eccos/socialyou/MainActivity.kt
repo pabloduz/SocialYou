@@ -14,6 +14,7 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupNavigation()
         setupCardStackView()
         setupButton()
+
 
         Firebase.setAndroidContext(this)
 
@@ -155,7 +157,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val geoFire = GeoFire(ref)
 
-        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 100000.00)
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 5.00)
 
         geoQuery.addGeoQueryDataEventListener(object : GeoQueryDataEventListener {
 
@@ -163,7 +165,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 val key = dataSnapshot.key
 
                 if(!spotsSwiped.contains(key)) {
-                    Log.e("TAG", "Event found near you.")
+                    Log.e(tag, "Event found near you.")
 
                     showSpots(key)
                 }
@@ -217,6 +219,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                     storageRef.child(key).downloadUrl.addOnSuccessListener {
                         // Got the download URL for 'users/me/profile.png'
                         var url= it.toString()
+
+                        var progressBar : ProgressBar = findViewById(R.id.progressBar)
+                        progressBar.visibility= View.GONE
 
                         addLast(1, key, title, date, time, description, url)
 
