@@ -73,7 +73,7 @@ public class AddEventForm extends AppCompatActivity {
 
     private Uri mImageUri;
 
-    private EditText title; private EditText date; private EditText time; private EditText description;
+    private EditText title; private EditText date; private EditText time; private EditText location; private EditText description;
 
 
     @Override
@@ -85,9 +85,7 @@ public class AddEventForm extends AppCompatActivity {
         //Getting references to Firebase
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        title = findViewById(R.id.title); date = findViewById(R.id.date); time = findViewById(R.id.time); description = findViewById(R.id.description);
-
-        date.setInputType(InputType.TYPE_NULL);
+        title = findViewById(R.id.title); date = findViewById(R.id.date); time = findViewById(R.id.time); location = findViewById(R.id.location); description = findViewById(R.id.description);
 
         startLocationUpdates();
 
@@ -168,6 +166,9 @@ public class AddEventForm extends AppCompatActivity {
         }else if (TextUtils.isEmpty(time.getText())) {
             time.setError("Time is required!");
 
+        }else if (TextUtils.isEmpty(location.getText())) {
+            location.setError("Location is required!");
+
         }else if (TextUtils.isEmpty(description.getText())) {
             description.setError("Description is required!");
 
@@ -184,13 +185,13 @@ public class AddEventForm extends AppCompatActivity {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(AddEventForm.this, new OnSuccessListener<Location>() {
                         @Override
-                        public void onSuccess(final Location location) {
+                        public void onSuccess(final Location myLocation) {
                             // Got last known location. In some rare situations this can be null.
 
-                            if (location != null) {
+                            if (myLocation != null) {
                                 //final LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-                                Log.e("Cord", "Latitude: " + location.getLatitude() + " Longitude: " + location.getLongitude());
+                                Log.e("Cord", "Latitude: " + myLocation.getLatitude() + " Longitude: " + myLocation.getLongitude());
 
                                 //Getting reference to Firebase
                                 myFirebaseRef = new Firebase("https://socialyou-be6cf.firebaseio.com/");
@@ -199,8 +200,11 @@ public class AddEventForm extends AppCompatActivity {
 
                                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+                                location.getText();
+                                title.getText();
+
                                 //Saving all data with FireBase
-                                mInformation.put("title", title.getText().toString()); mInformation.put("date", date.getText().toString()); mInformation.put("time", time.getText().toString()); mInformation.put("description", description.getText().toString());
+                                mInformation.put("title", title.getText().toString()); mInformation.put("date", date.getText().toString()); mInformation.put("time", time.getText().toString()); mInformation.put("location", location.getText().toString()); mInformation.put("description", description.getText().toString());
                                 Firebase fb = myFirebaseRef.child("events").push();
                                 fb.setValue(mInformation);
 
@@ -210,7 +214,7 @@ public class AddEventForm extends AppCompatActivity {
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/locations");
                                 GeoFire geoFire = new GeoFire(ref);
 
-                                geoFire.setLocation(key, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                                geoFire.setLocation(key, new GeoLocation(myLocation.getLatitude(), myLocation.getLongitude()), new GeoFire.CompletionListener() {
                                     @Override
                                     public void onComplete(String key, DatabaseError error) {
                                         if (error != null) {

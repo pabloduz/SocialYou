@@ -1,6 +1,5 @@
 package com.eccos.socialyou
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +18,14 @@ class CardStackAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val spot = spots[position]
-        holder.title.text = "${spot.title}"
-        holder.date.text = "Date: ${spot.date}  Time: ${spot.time}"
+
+
+        holder.title.text = spot.title
+        holder.date.text = " ${spot.date}"
+        holder.time.text = " ${spot.time}"
+
         Glide.with(holder.image)
                 .load(spot.url)
                 .into(holder.image)
@@ -50,6 +54,7 @@ class CardStackAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.item_title)
         var date: TextView = view.findViewById(R.id.item_date)
+        var time: TextView = view.findViewById(R.id.item_time)
         var image: ImageView = view.findViewById(R.id.item_image)
     }
 

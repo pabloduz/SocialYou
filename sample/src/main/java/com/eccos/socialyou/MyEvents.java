@@ -1,22 +1,18 @@
 package com.eccos.socialyou;
 
-import android.app.ActionBar;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
+
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +30,6 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static android.os.SystemClock.sleep;
 
 public class MyEvents extends AppCompatActivity {
     private static SharedPreferences pref;
@@ -127,23 +122,23 @@ public class MyEvents extends AppCompatActivity {
                     @Override
                     public void run() {
                         //Do something after X ms
-                        if (spots.isEmpty()){
+                        if (spots.isEmpty()) {
                             Log.e(tag, "Empty");
-                            createCardView();
+                            Spot spot = new Spot(1, "1", getString(R.string.no_event), "", "", "", "");
 
-
-                        }else{
-                            Log.e(tag, "Not empty");
-
-                            spotAdapter = new SpotAdapter(spots);
-
-                            recyclerView = findViewById(R.id.rv);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-                            recyclerView.setAdapter(spotAdapter);
+                            spots.add(spot);
                         }
-                    }
-                }, 1500);
+
+                        spotAdapter = new SpotAdapter(spots);
+
+                        recyclerView = findViewById(R.id.rv);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(spotAdapter);
+
+                }
+                }, 3000);
+
             }
 
             @Override
@@ -164,49 +159,13 @@ public class MyEvents extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-
-    public void createCardView(){
-
-        CardView cardview = new CardView(this);
-
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
-                ActionBar.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.WRAP_CONTENT
-        );
-
-
-        cardview.setLayoutParams(layoutParams);
-
-        cardview.setRadius(15);
-
-        cardview.setPadding(25, 25, 25, 25);
-
-        cardview.setCardBackgroundColor(Color.BLACK);
-
-        cardview.setMaxCardElevation(30);
-
-        TextView textview = new TextView(this);
-
-        textview.setLayoutParams(layoutParams);
-
-        textview.setText(R.string.no_event);
-
-        textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-
-        textview.setTextColor(Color.WHITE);
-
-        textview.setPadding(25,25,25,25);
-
-        textview.setGravity(Gravity.CENTER);
-
-        cardview.addView(textview);
-
-        setContentView(R.layout.list_empty);
-
-        LinearLayout linearLayout = findViewById(R.id.lLayout);
-
-        linearLayout.addView(cardview);
-
+        Intent myIntent= new Intent(MyEvents.this, MainActivity.class);
+        startActivity(myIntent);
+        finish();
     }
+
 }

@@ -6,11 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -20,6 +25,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
     List<Spot> spotList;
     Context context;
 
+
     public SpotAdapter(List<Spot>spList)
     {
         this.spotList = spList;
@@ -28,11 +34,13 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        Log.e("SpotAdapter", "Entrou");
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_event,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
+
         context = parent.getContext();
+        // Request option for Glide
+        //option = new RequestOptions().centerCrop().placeholder(R.drawable.loading_shape).error(R.drawable.loading_shape); apply(option);
         return viewHolder;
     }
 
@@ -40,25 +48,20 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Spot item = spotList.get(position);
 
-        Log.e("SpotAdapter", "Entrou");
+        // String date= context.getString(R.string.date); String time= context.getString(R.string.time); String concat= date + ": " + item.getDate() + "  " + time + ": " + item.getTime();
 
-        if(position == 0){
-            holder.header.setText(R.string.my_events);
-            holder.header.setPadding(0,0,0,50);
+        String title= item.getTitle();
+        int length= title.length();
+
+
+        if(length > 60){
+            title= title.substring(0,57).concat("...");
         }
 
-        holder.title.setText(item.getTitle());
+        holder.title.setText(title);
         holder.date.setText(item.getDate());
-
-
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context,"The position is:"+position,Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
+        holder.time.setText(item.getTime());
+        Glide.with(context).load(item.getUrl()).into(holder.img_thumbnail);
     }
 
     @Override
@@ -69,35 +72,20 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        TextView header;
         TextView title;
         TextView date;
-        CardView cardView;
+        TextView time;
+        ImageView img_thumbnail;
+        LinearLayout view_container;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
-            header =  itemView.findViewById(R.id.header);
             title = itemView.findViewById(R.id.title);
             date = itemView.findViewById(R.id.date);
-            cardView = itemView.findViewById(R.id.cv);
-
-            cardView.setRadius(15);
-
-            cardView.setPadding(25, 25, 25, 25);
-
-            cardView.setCardBackgroundColor(Color.BLACK);
-
-            cardView.setMaxCardElevation(30);
-
-            title.setTextColor(Color.WHITE);
-
-            title.setPadding(25,25,25,25);
-
-            date.setTextColor(Color.WHITE);
-
-            date.setPadding(25,25,25,25);
-
+            time = itemView.findViewById(R.id.time);
+            img_thumbnail = itemView.findViewById(R.id.thumbnail);
+            view_container = itemView.findViewById(R.id.container);
 
         }
 

@@ -36,13 +36,32 @@
             android:textColor="@android:color/white"
             android:textSize="26sp"/>
 
-        <TextView
-            android:id="@+id/item_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/item_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:drawableLeft="@drawable/ic_date_range_black_24dp"
+                android:layout_weight="0.2"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:drawableLeft="@drawable/ic_access_time_black_24dp"
+                android:layout_weight="0.8"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
