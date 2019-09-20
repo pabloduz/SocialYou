@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startLocationUpdates()
 
+                    startService(Intent(this, LocationService::class.java))
                 } else {
                     Toast.makeText(this, R.string.grant_location, Toast.LENGTH_LONG).show()
                     finish()
@@ -151,6 +152,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                             }
                         }
 
+                        Log.e(tag, "startLocationUpdate CALLED")
 
                         getSpots(myLocation)
                     }
@@ -257,13 +259,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     }
 
-
-    /**
-     * Executed when the process is running on the background.
-     */
     public override fun onPause() {
         super.onPause()
-
         stopLocationUpdates()
     }
 
