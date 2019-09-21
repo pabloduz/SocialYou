@@ -15,6 +15,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
@@ -228,15 +229,17 @@ class AddEventForm : AppCompatActivity() {
                             //Uploading the event image with FireBase Storage
                             storeImageFile(key)
 
-                            sleep(2000)
-
                             var intent= Intent()
                             setResult(Activity.RESULT_OK, intent)
 
-                            val myIntent = Intent(this@AddEventForm, MyEvents::class.java)
-                            startActivity(myIntent)
+                            val handler = Handler()
+                            handler.postDelayed({
+                                val myIntent = Intent(this@AddEventForm, MyEvents::class.java)
+                                startActivity(myIntent)
 
-                            finish()
+                                finish()
+
+                            }, 1200)
 
                         } else {
                             Log.e(TAG, "Location is null.")

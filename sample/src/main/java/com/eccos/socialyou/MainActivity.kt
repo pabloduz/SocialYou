@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
 
@@ -276,10 +277,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onResume() {
         super.onResume()
 
-        setWindow()
-
         createLocationRequest()
         startLocationUpdates()
+
+        setWindow()
     }
 
     public override fun onPause() {

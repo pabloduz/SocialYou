@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock.sleep
 import android.preference.PreferenceManager
 import android.util.Log
 
@@ -76,6 +77,8 @@ class MyEvents : AppCompatActivity() {
 
                             val storageRef = FirebaseStorage.getInstance().reference
 
+                            Log.e(tag, "FOR")
+
 
                             storageRef.child(key).downloadUrl.addOnSuccessListener { uri ->
                                 // Got the download URL for 'users/me/profile.png'
@@ -94,7 +97,6 @@ class MyEvents : AppCompatActivity() {
                         override fun onCancelled(firebaseError: FirebaseError) {}
                     })
                 }
-
 
                 val handler = Handler()
                 handler.postDelayed({
@@ -115,7 +117,7 @@ class MyEvents : AppCompatActivity() {
                     recyclerView.layoutManager = LinearLayoutManager(applicationContext)
                     recyclerView.itemAnimator = DefaultItemAnimator()
                     recyclerView.adapter = spotAdapter
-                }, 1000)
+                }, 1200)
 
             }
 
