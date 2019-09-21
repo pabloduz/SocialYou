@@ -24,6 +24,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
     List<Spot> spotList;
     Context context;
+    RequestOptions option;
 
 
     public SpotAdapter(List<Spot>spList)
@@ -40,7 +41,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
         context = parent.getContext();
         // Request option for Glide
-        //option = new RequestOptions().centerCrop().placeholder(R.drawable.loading_shape).error(R.drawable.loading_shape); apply(option);
+        option = new RequestOptions().centerCrop().placeholder(R.drawable.loading_shape).error(R.drawable.loading_shape);
         return viewHolder;
     }
 
@@ -61,7 +62,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
         holder.title.setText(title);
         holder.date.setText(item.getDate());
         holder.time.setText(item.getTime());
-        Glide.with(context).load(item.getUrl()).into(holder.img_thumbnail);
+        Glide.with(context).load(item.getUrl()).apply(option).into(holder.img_thumbnail);
     }
 
     @Override

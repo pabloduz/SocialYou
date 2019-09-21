@@ -53,6 +53,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.os.SystemClock.sleep;
+
 
 public class AddEventForm extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -234,11 +236,11 @@ public class AddEventForm extends AppCompatActivity {
                                 //Uploading the event image with FireBase Storage
                                 storeImageFile(key);
 
-                                Intent myIntent= new Intent(AddEventForm.this, MyEvents.class);
-                                startActivity(myIntent);
-
                                 Intent intent=new Intent();
                                 setResult(Activity.RESULT_OK, intent);
+
+                                Intent myIntent= new Intent(AddEventForm.this, MyEvents.class);
+                                startActivity(myIntent);
 
                                 finish();
 
@@ -448,7 +450,7 @@ public class AddEventForm extends AppCompatActivity {
     private void showSnackbar(int text){
         View contextView = findViewById(android.R.id.content);
 
-        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
+        Snackbar.make(contextView, text, Snackbar.LENGTH_SHORT)
                 .show();
     }
 }

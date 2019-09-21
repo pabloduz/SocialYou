@@ -154,14 +154,4 @@ public class MyEvents extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        Intent myIntent= new Intent(MyEvents.this, MainActivity.class);
-        startActivity(myIntent);
-        finish();
-    }
-
 }

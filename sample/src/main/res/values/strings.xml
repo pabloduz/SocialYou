@@ -30,11 +30,11 @@
     <string name="send">Send</string>
     <string name="image">Click to Select Image</string>
     <string name="select_image">Select an image first.</string>
-    <string name="image_selected">Image loaded!</string>
+    <string name="image_selected">Image loaded</string>
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on Events or \nCreate yours!\n\n\n\n</string>
+    <string name="no_event">Swipe on Events or\nCreate yours!\n\n\n\n</string>
     <string name="my_events">My Events</string>
     <string name="location">Location</string>
 

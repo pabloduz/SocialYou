@@ -469,7 +469,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             if (resultCode == Activity.RESULT_OK) {
 
                 Log.e(tag, "onActivityResult called!")
-                finish()
             }
         }
     }
