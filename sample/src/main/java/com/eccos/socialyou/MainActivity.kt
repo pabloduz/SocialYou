@@ -474,8 +474,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
 
-
-
     private fun addLast(size: Int, key: String, title: String, date: String, time: String, description: String, url: String) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
