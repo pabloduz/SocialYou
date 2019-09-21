@@ -32,5 +32,6 @@
     <string name="grant_storage">Grant permission to select image.</string>
     <string name="no_event">Swipe on Events or\nCreate yours!\n\n\n\n</string>
     <string name="location">Location</string>
+    <string name="event_description">Event Description</string>
 
 </resources>

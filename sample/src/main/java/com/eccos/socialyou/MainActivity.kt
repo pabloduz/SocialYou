@@ -229,6 +229,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                     val title = data["title"] as String
                     val date = data["date"] as String
                     val time = data["time"] as String
+                    val location = data["location"] as String
                     val description = data["description"] as String
 
 
@@ -243,7 +244,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         progressBar.visibility = View.GONE
 
 
-                        addLast(1, key, title, date, time, description, url)
+                        addLast(1, key, title, date, time, location, description, url)
 
                     }.addOnFailureListener {
                         // Handle any errors
@@ -482,11 +483,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         finish()
     }
 
-    private fun addLast(size: Int, key: String, title: String, date: String, time: String, description: String, url: String) {
+    private fun addLast(size: Int, key: String, title: String, date: String, time: String, location: String, description: String, url: String) {
         val old = adapter.getSpots()
         val new = mutableListOf<Spot>().apply {
             addAll(old)
-            addAll(List(size) { createSpot(key, title, date, time, description, url) })
+            addAll(List(size) { createSpot(key, title, date, time, location, description, url) })
         }
         val callback = SpotDiffCallback(old, new)
         val result = DiffUtil.calculateDiff(callback)
@@ -494,12 +495,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         result.dispatchUpdatesTo(adapter)
     }
 
-    private fun createSpot(key: String, title: String, date: String, time: String, description: String, url: String): Spot {
+    private fun createSpot(key: String, title: String, date: String, time: String, location: String, description: String, url: String): Spot {
         return Spot(
                 key= key,
                 title = title,
                 date = date,
                 time = time,
+                location = location,
                 description = description,
                 url = url
         )

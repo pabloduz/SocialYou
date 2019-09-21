@@ -1,6 +1,7 @@
 package com.eccos.socialyou;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,34 +23,56 @@ import java.util.List;
 
 public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
 
-    List<Spot> spotList;
-    Context context;
+    Context mContext;
     RequestOptions option;
+    List<Spot> mData ;
 
 
-    public SpotAdapter(List<Spot>spList)
-    {
-        this.spotList = spList;
+
+    public SpotAdapter(Context mContext, List<Spot> mData) {
+        this.mContext = mContext;
+        this.mData = mData;
+
+        // Request option for Glide
+        option = new RequestOptions().centerCrop().placeholder(R.drawable.loading_shape).error(R.drawable.loading_shape);
+
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
+        mContext = parent.getContext();
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_event,parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_event,parent,false);
+        final ViewHolder viewHolder = new ViewHolder(view);
 
-        context = parent.getContext();
         // Request option for Glide
         option = new RequestOptions().centerCrop().placeholder(R.drawable.loading_shape).error(R.drawable.loading_shape);
+        viewHolder.view_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(mContext, ShowEvent.class);
+                i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
+                i.putExtra("title",mData.get(viewHolder.getAdapterPosition()).getTitle());
+                i.putExtra("date",mData.get(viewHolder.getAdapterPosition()).getDate());
+                i.putExtra("time",mData.get(viewHolder.getAdapterPosition()).getTime());
+                i.putExtra("location",mData.get(viewHolder.getAdapterPosition()).getLocation());
+                i.putExtra("description",mData.get(viewHolder.getAdapterPosition()).getDescription());
+                i.putExtra("url",mData.get(viewHolder.getAdapterPosition()).getUrl());
+
+                mContext.startActivity(i);
+
+            }
+        });
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Spot item = spotList.get(position);
+        Spot item = mData.get(position);
 
-        // String date= context.getString(R.string.date); String time= context.getString(R.string.time); String concat= date + ": " + item.getDate() + "  " + time + ": " + item.getTime();
+        // String date= mContext.getString(R.string.date); String time= mContext.getString(R.string.time); String concat= date + ": " + item.getDate() + "  " + time + ": " + item.getTime();
 
         String title= item.getTitle();
         int length= title.length();
@@ -62,12 +85,12 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
         holder.title.setText(title);
         holder.date.setText(item.getDate());
         holder.time.setText(item.getTime());
-        Glide.with(context).load(item.getUrl()).apply(option).into(holder.img_thumbnail);
+        Glide.with(mContext).load(item.getUrl()).apply(option).into(holder.img_thumbnail);
     }
 
     @Override
     public int getItemCount() {
-        return spotList.size();
+        return mData.size();
     }
 
 
@@ -76,6 +99,8 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
         TextView title;
         TextView date;
         TextView time;
+        TextView location;
+        TextView description;
         ImageView img_thumbnail;
         LinearLayout view_container;
 

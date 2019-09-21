@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock.sleep
 import android.preference.PreferenceManager
 import android.util.Log
 
@@ -73,6 +72,7 @@ class MyEvents : AppCompatActivity() {
                             val title = data["title"] as String?
                             val date = data["date"] as String?
                             val time = data["time"] as String?
+                            val location = data["time"] as String?
                             val description = data["description"] as String?
 
                             val storageRef = FirebaseStorage.getInstance().reference
@@ -84,7 +84,7 @@ class MyEvents : AppCompatActivity() {
                                 // Got the download URL for 'users/me/profile.png'
                                 val url = uri.toString()
 
-                                val spot = Spot(1, key, title!!, date!!, time!!, description!!, url)
+                                val spot = Spot(1, key, title!!, date!!, time!!, location!!, description!!, url)
 
                                 spots!!.add(spot)
 
@@ -98,27 +98,7 @@ class MyEvents : AppCompatActivity() {
                     })
                 }
 
-                val handler = Handler()
-                handler.postDelayed({
-                    val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-                    progressBar.visibility = View.GONE
-
-                    //Do something after X ms
-                    if (spots!!.isEmpty()) {
-                        Log.e(tag, "Empty")
-                        val spot = Spot(1, "1", getString(R.string.no_event), "", "", "", "")
-
-                        spots!!.add(spot)
-                    }
-
-                    var spotAdapter = SpotAdapter(spots)
-
-                    var recyclerView = findViewById<RecyclerView>(R.id.rv)
-                    recyclerView.layoutManager = LinearLayoutManager(applicationContext)
-                    recyclerView.itemAnimator = DefaultItemAnimator()
-                    recyclerView.adapter = spotAdapter
-                }, 1200)
-
+                setupAdapter()
             }
 
             override fun onCancelled(firebaseError: FirebaseError) {
@@ -126,6 +106,29 @@ class MyEvents : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun setupAdapter() {
+        val handler = Handler()
+        handler.postDelayed({
+            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+            progressBar.visibility = View.GONE
+
+            //Do something after X ms
+            if (spots!!.isEmpty()) {
+                Log.e(tag, "Empty")
+                val spot = Spot(1, "1", getString(R.string.no_event), "", "", "", "", "")
+
+                spots!!.add(spot)
+            }
+
+            var spotAdapter = SpotAdapter(this, spots)
+
+            var recyclerView = findViewById<RecyclerView>(R.id.rv)
+            recyclerView.layoutManager = LinearLayoutManager(applicationContext)
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = spotAdapter
+        }, 1200)
     }
 
     private fun setWindow() {

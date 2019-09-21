@@ -6,6 +6,7 @@ data class Spot(
         val title: String,
         val date: String,
         val time: String,
+        val location: String,
         val description: String,
         val url: String
 ) {
@@ -19,6 +20,7 @@ data class Spot(
             val title: String = "",
             val date: String = "",
             val time:  String = "",
+            val location: String = "",
             val description:  String = "",
             val url:  String = ""
     )

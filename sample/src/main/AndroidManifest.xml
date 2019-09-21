@@ -33,8 +33,9 @@
         <activity android:name="com.eccos.socialyou.MyEvents"
             android:screenOrientation="portrait">
         </activity>
-
-
+        <activity android:name="com.eccos.socialyou.ShowEvent"
+            android:screenOrientation="portrait">
+        </activity>
         <service android:name="com.eccos.socialyou.LocationService"/>
 
     </application>
