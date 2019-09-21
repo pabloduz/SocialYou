@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".AddEventForm">
+    tools:context=".AddEventForm"
+    android:id="@+id/constraintLayout">
 
 
-    <EditText
+<EditText
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginTop="50dp"
-        android:ems="12"
+        android:ems="13"
         android:hint="@string/title"
         android:inputType="text"
         android:textColor="#FFFFFF"
@@ -47,14 +48,16 @@
         android:textColorHint="#FFFFFF"
         app:layout_constraintLeft_toRightOf="@id/date"
         app:layout_constraintTop_toBottomOf="@id/title"
-        android:autofillHints="@string/time"/>
+        android:autofillHints="@string/time"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
 
     <EditText
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
-        android:ems="12"
+        android:ems="13"
         android:hint="@string/location"
         android:inputType="text"
         android:textColor="#FFFFFF"
@@ -69,10 +72,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:ems="12"
+        android:ems="13"
         android:hint="@string/description"
         android:inputType="textMultiLine"
-        android:maxLines="5"
+        android:maxLines="4"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -102,6 +105,16 @@
         android:text="@string/send"
         app:layout_constraintLeft_toLeftOf="@id/choose_image"
         app:layout_constraintTop_toBottomOf="@id/choose_image" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/send_button"
+        app:layout_constraintTop_toTopOf="@id/send_button"
+        android:layout_marginLeft="20dp"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/slogan"

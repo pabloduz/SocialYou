@@ -72,14 +72,21 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
 
-        createLocationRequest()
-        startLocationUpdates()
-
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupCardStackView()
         setupButton()
     }
+
+    private fun setWindow() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    }
+
 
     private fun setupSpotsSwiped() {
         var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
@@ -266,6 +273,15 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         layout.addView(progressBar)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        setWindow()
+
+        createLocationRequest()
+        startLocationUpdates()
+    }
+
     public override fun onPause() {
         super.onPause()
         stopLocationUpdates()
@@ -366,12 +382,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.reload -> reload()
-                R.id.add_spot_to_first -> addFirst()
-                R.id.remove_spot_from_first -> removeFirst(1)
-                R.id.remove_spot_from_last -> removeLast(1)
-                R.id.replace_first_spot -> replace()
-                R.id.swap_first_for_last -> swap()
+                R.id.home_page -> home()
+                R.id.add_event -> addEvent()
+                R.id.my_events -> myEvents()
+
             }
             drawerLayout.closeDrawers()
             true
@@ -438,28 +452,15 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
     }
 
-    private fun paginate() {
-        val old = adapter.getSpots()
-        val new = old.plus(createSpots())
-        val callback = SpotDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
-        result.dispatchUpdatesTo(adapter)
+    private fun home() {
+
     }
 
-    private fun reload() {
-        val old = adapter.getSpots()
-        val new = createSpots()
-        val callback = SpotDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
-        result.dispatchUpdatesTo(adapter)
-    }
-
-    private fun addFirst() {
+    private fun addEvent() {
         val myIntent = Intent(this@MainActivity, AddEventForm::class.java)
         startActivityForResult(myIntent, eventCreated)
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -467,12 +468,18 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         if (requestCode == eventCreated) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
-
                 Log.e(tag, "onActivityResult called!")
+
+                finish()
             }
         }
     }
 
+    private fun myEvents() {
+        val myIntent = Intent(this@MainActivity, MyEvents::class.java)
+        startActivity(myIntent)
+        finish()
+    }
 
     private fun addLast(size: Int, key: String, title: String, date: String, time: String, description: String, url: String) {
         val old = adapter.getSpots()
@@ -485,57 +492,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         adapter.setSpots(new)
         result.dispatchUpdatesTo(adapter)
     }
-
-    private fun removeFirst(size: Int) {
-        val myIntent = Intent(this@MainActivity, MyEvents::class.java)
-        startActivity(myIntent)
-    }
-
-    private fun removeLast(size: Int) {
-        if (adapter.getSpots().isEmpty()) {
-            return
-        }
-
-        val old = adapter.getSpots()
-        val new = mutableListOf<Spot>().apply {
-            addAll(old)
-            for (i in 0 until size) {
-                removeAt(this.size - 1)
-            }
-        }
-        val callback = SpotDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
-        result.dispatchUpdatesTo(adapter)
-    }
-
-    private fun replace() {
-//        val old = adapter.getSpots()
-//        val new = mutableListOf<Spot>().apply {
-//            addAll(old)
-//            removeAt(manager.topPosition)
-//            add(manager.topPosition, createSpot(title, date, time, description))
-//        }
-//        adapter.setSpots(new)
-//        adapter.notifyItemChanged(manager.topPosition)
-    }
-
-    private fun swap() {
-        val old = adapter.getSpots()
-        val new = mutableListOf<Spot>().apply {
-            addAll(old)
-            val first = removeAt(manager.topPosition)
-            val last = removeAt(this.size - 1)
-            add(manager.topPosition, last)
-            add(first)
-        }
-
-        val callback = SpotDiffCallback(old, new)
-        val result = DiffUtil.calculateDiff(callback)
-        adapter.setSpots(new)
-        result.dispatchUpdatesTo(adapter)
-    }
-
 
     private fun createSpot(key: String, title: String, date: String, time: String, description: String, url: String): Spot {
         return Spot(
@@ -550,21 +506,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createSpots(): List<Spot> {
         val spots = ArrayList<Spot>()
-        //spots.add(Spot(title = "Welcome", date = "", time = "", description = "", url = "https://firebasestorage.googleapis.com/v0/b/socialyou-be6cf.appspot.com/o/-Lp4flO1EZ0YmtE62k6N?alt=media&token=b7e5b037-1d61-455e-b596-7bd4456e3a53"))
         return spots
     }
-
 }
-
-
-//        spots.add(Spot(title = "Yasaka Shrine", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/Xq1ntWruZQI/600x800"))
-//        spots.add(Spot(title = "Fushimi Inari Shrine", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/NYyCqdBOKwc/600x800"))
-//        spots.add(Spot(title = "Bamboo Forest", date = "Kyoto", time = "", description = "", url = "https://source.unsplash.com/buF62ewDLcQ/600x800"))
-//        spots.add(Spot(title = "Brooklyn Bridge", date = "New York", time = "", description = "", url = "https://source.unsplash.com/THozNzxEP3g/600x800"))
-//        spots.add(Spot(title = "Empire State Building", date = "New York", time = "", description = "", url = "https://source.unsplash.com/USrZRcRS2Lw/600x800"))
-//        spots.add(Spot(title = "The statue of Liberty", date = "New York", time = "", description = "", url = "https://source.unsplash.com/PeFk7fzxTdk/600x800"))
-//        spots.add(Spot(title = "Louvre Museum", date = "Paris", time = "", description = "", url = "https://source.unsplash.com/LrMWHKqilUw/600x800"))
-//        spots.add(Spot(title = "Eiffel Tower", date = "Paris", time = "", description = "", url = "https://source.unsplash.com/HN-5Z6AmxrM/600x800"))
-//        spots.add(Spot(title = "Big Ben", date = "London", time = "", description = "", url = "https://source.unsplash.com/CdVAUADdqEc/600x800"))
-//        spots.add(Spot(title = "Great Wall of China", date = "China", time = "", description = "", url = "https://source.unsplash.com/AWh9C-QjhE4/600x800"))
-

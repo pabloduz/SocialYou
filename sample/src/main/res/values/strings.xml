@@ -7,13 +7,9 @@
     <!-- NavigationView -->
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
-    <string name="reload">Reload</string>
-    <string name="add_event">Create an event</string>
-    <string name="myEvents">My Events</string>
-    <string name="add_spot_to_last">Add spot to last</string>
-    <string name="remove_spot_from_last">Remove spot from last</string>
-    <string name="replace_first_spot">Replace first spot</string>
-    <string name="swap_first_for_last">Swap first for last</string>
+    <string name="home">Home</string>
+    <string name="add_event">Add an Event</string>
+    <string name="my_events">My Events</string>
 
     <string name="facebook_application_id" translatable="false">501310727318410</string>
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
@@ -35,7 +31,6 @@
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
     <string name="no_event">Swipe on Events or\nCreate yours!\n\n\n\n</string>
-    <string name="my_events">My Events</string>
     <string name="location">Location</string>
 
 </resources>
