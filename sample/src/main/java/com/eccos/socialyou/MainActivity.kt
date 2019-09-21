@@ -206,19 +206,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         })
     }
 
-    private fun createProgressBar() {
-        // Create progressBar dynamically...
-        val progressBar = ProgressBar(this)
-        progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-        progressBar.id= R.id.progressBar
-        val layout = findViewById<LinearLayout>(R.id.container)
-
-        // Add ProgressBar to LinearLayout
-        layout.gravity = Gravity.CENTER
-        layout.addView(progressBar)
-    }
-
     fun showSpots(key: String?) {
         try {
             //Get the DataSnapshot key
@@ -263,6 +250,20 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             Log.e(tag, "FireBase exception: " + ex.message)
         }
 
+    }
+
+    private fun createProgressBar() {
+        // Create progressBar dynamically...
+        val progressBar = ProgressBar(this)
+        progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        progressBar.setPadding(0,0,0,175)
+
+        progressBar.id= R.id.progressBar
+        val layout = findViewById<LinearLayout>(R.id.container)
+
+        // Add ProgressBar to LinearLayout
+        layout.gravity = Gravity.CENTER
+        layout.addView(progressBar)
     }
 
     public override fun onPause() {
