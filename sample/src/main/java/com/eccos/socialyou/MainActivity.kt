@@ -8,15 +8,16 @@ import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -25,6 +26,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.eccos.socialyou.cardstackview.*
 import com.firebase.client.Firebase
@@ -43,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.my_events.view.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val myLocationPermissionRequest = 101
     private val eventCreated = 10
     private val tag = "MainActivity"
+    private var firstSpot: Boolean = true
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationCallback: LocationCallback? = null
@@ -63,22 +67,18 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var arrayList = ArrayList<String>()
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        setupNavigation()
-        setupCardStackView()
-        setupButton()
-
         Firebase.setAndroidContext(this)
-
         setupSpotsSwiped()
 
         createLocationRequest()
         startLocationUpdates()
+
+        setContentView(R.layout.activity_main)
+        setupNavigation()
+        setupCardStackView()
+        setupButton()
     }
 
     private fun setupSpotsSwiped() {
@@ -112,13 +112,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun createLocationRequest() {
         var locationRequestLocal = LocationRequest.create()
-        locationRequestLocal.smallestDisplacement = 1f
+        locationRequestLocal.smallestDisplacement = 5f
         locationRequestLocal.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
         val builder = LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequestLocal)
 
-        locationRequest = locationRequestLocal;
+        locationRequest = locationRequestLocal
 
         val client = LocationServices.getSettingsClient(this)
         client.checkLocationSettings(builder.build())
@@ -137,20 +137,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                     for (location in locationResult.locations) {
                         // Update UI with location data
                         val myLocation = LatLng(location.latitude, location.longitude)
-
-                        //Creating a user location node with GeoFire
-                        val ref = FirebaseDatabase.getInstance().getReference("/locations_")
-                        val geoFire = GeoFire(ref)
-
-                        val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-                        geoFire.setLocation(userId, GeoLocation(location.getLatitude(), location.getLongitude())) { key, error ->
-                            if (error != null) {
-                                Log.e(tag, "There was an error saving the location to GeoFire: $error")
-                            } else {
-                                Log.e(tag, "Location saved on server successfully!")
-                            }
-                        }
 
                         Log.e(tag, "startLocationUpdate CALLED")
 
@@ -186,6 +172,12 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 if(!spotsSwiped.contains(key)) {
                     Log.e(tag, "Event found near you.")
 
+                    if(firstSpot){
+                        createProgressBar()
+                        
+                        firstSpot= false
+                    }
+                    
                     showSpots(key)
                 }
             }
@@ -214,6 +206,19 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         })
     }
 
+    private fun createProgressBar() {
+        // Create progressBar dynamically...
+        val progressBar = ProgressBar(this)
+        progressBar.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        progressBar.id= R.id.progressBar
+        val layout = findViewById<LinearLayout>(R.id.container)
+
+        // Add ProgressBar to LinearLayout
+        layout.gravity = Gravity.CENTER
+        layout.addView(progressBar)
+    }
+
     fun showSpots(key: String?) {
         try {
             //Get the DataSnapshot key
@@ -239,8 +244,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Got the download URL
                         var url= it.toString()
 
-                        var progressBar : ProgressBar = findViewById(R.id.progressBar)
-                        progressBar.visibility= View.GONE
+                        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+                        progressBar.visibility = View.GONE
+
 
                         addLast(1, key, title, date, time, description, url)
 
