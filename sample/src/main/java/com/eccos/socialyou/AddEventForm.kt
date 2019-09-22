@@ -194,8 +194,6 @@ class AddEventForm : AppCompatActivity() {
 
                             val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-                            location!!.text
-                            title!!.text
 
                             //Saving all data with FireBase
                             mInformation.put("title", title!!.text.toString())

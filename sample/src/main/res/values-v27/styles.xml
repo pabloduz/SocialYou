@@ -7,7 +7,5 @@
             never <!-- default, shortEdges, never -->
         </item>
         <item name="colorAccent">@color/colorAccent</item>
-
-
     </style>
 </resources>

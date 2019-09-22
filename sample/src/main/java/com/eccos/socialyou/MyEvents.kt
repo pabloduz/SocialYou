@@ -72,7 +72,7 @@ class MyEvents : AppCompatActivity() {
                             val title = data["title"] as String?
                             val date = data["date"] as String?
                             val time = data["time"] as String?
-                            val location = data["time"] as String?
+                            val location = data["location"] as String?
                             val description = data["description"] as String?
 
                             val storageRef = FirebaseStorage.getInstance().reference

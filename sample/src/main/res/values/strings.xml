@@ -33,5 +33,6 @@
     <string name="no_event">Swipe on Events or\nCreate yours!\n\n\n\n</string>
     <string name="location">Location</string>
     <string name="event_description">Event Description</string>
+    <string name="amazing_event">Amazing Event</string>
 
 </resources>

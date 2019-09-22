@@ -52,6 +52,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
+
                 Intent i = new Intent(mContext, ShowEvent.class);
                 i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
                 i.putExtra("title",mData.get(viewHolder.getAdapterPosition()).getTitle());
@@ -77,12 +78,13 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
         String title= item.getTitle();
         int length= title.length();
 
-
         if(length > 60){
-            title= title.substring(0,57).concat("...");
+            String shortTitle= title.substring(0,57).concat("...");
+            holder.title.setText(shortTitle);
+        }else{
+            holder.title.setText(title);
         }
 
-        holder.title.setText(title);
         holder.date.setText(item.getDate());
         holder.time.setText(item.getTime());
         Glide.with(mContext).load(item.getUrl()).apply(option).into(holder.img_thumbnail);
