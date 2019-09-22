@@ -2,11 +2,10 @@
 <resources>
     <color name="colorPrimary">#181818</color>
     <color name="colorPrimaryDark">#0A0A0A</color>
-    <color name="colorAccent">#6FE2B3</color>
+    <color name="colorAccent">#0EC075</color>
 
     <color name="colorPrimaryFading">#33181818</color>
-    <color name="white">#FFFFFF</color>
     <color name="buttonColor">#04462A</color>
-</resources>
 
-    <!--<color name="button_color">#DBDBDB</color>-->
+    <color name="white">#FFFFFF</color>
+</resources>

@@ -12,6 +12,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -45,8 +48,10 @@ import java.util.Locale
 
 import android.os.SystemClock.sleep
 import android.text.InputType
+import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.add_event_form.*
 
@@ -86,9 +91,15 @@ class AddEventForm : AppCompatActivity() {
         location = findViewById(R.id.location)
         description = findViewById(R.id.description)
 
-        date!!.inputType = InputType.TYPE_NULL
-
         setDialogCalendar()
+
+        findViewById<ConstraintLayout>(R.id.constraintLayout).setOnTouchListener(View.OnTouchListener { v, event ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(slogan.windowToken, 0)
+            constraintLayout.requestFocus()
+
+            true
+        })
 
         val chooseImage = findViewById<View>(R.id.choose_image) as Button
         chooseImage.setOnClickListener {
@@ -116,6 +127,7 @@ class AddEventForm : AppCompatActivity() {
             }
         }
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
