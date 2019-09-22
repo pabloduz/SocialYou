@@ -80,13 +80,22 @@
       "l" : [ -27.5993422, -48.5199684 ]
     }
   },
+  "locations_" : {
+    "wxRd104p9NTG0mCTFpq67uMoxUE3" : {
+      ".priority" : "6gj6zzsy4v",
+      "g" : "6gj6zzsy4v",
+      "l" : [ -27.5993429, -48.5199688 ]
+    }
+  },
   "users" : {
     "wxRd104p9NTG0mCTFpq67uMoxUE3" : {
-      "-LpOuLiMhkyVEwcmSm_X" : true,
-      "-LpOvu5XOCRTdnmWockV" : true,
-      "-LpOwM6R2R7PEoHnLbeA" : true,
-      "-LpOxyM-38hN4_apcLdE" : true,
-      "-LpOysQHaiCyAnHhvldK" : true
+      "events" : {
+        "-LpOuLiMhkyVEwcmSm_X" : true,
+        "-LpOvu5XOCRTdnmWockV" : true,
+        "-LpOwM6R2R7PEoHnLbeA" : true,
+        "-LpOxyM-38hN4_apcLdE" : true,
+        "-LpOysQHaiCyAnHhvldK" : true
+      }
     }
   }
 }

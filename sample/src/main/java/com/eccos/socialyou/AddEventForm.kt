@@ -233,8 +233,8 @@ class AddEventForm : AppCompatActivity() {
                             //Creating a node for event's attendees
                             myFirebaseRef!!.child("attendees").child(key).child(userId).setValue(true)
 
-                            //Creating a node for event's attendees
-                            myFirebaseRef!!.child("users").child(userId).child(key).setValue(true)
+                            //Linking the event to the user
+                            myFirebaseRef!!.child("users").child(userId).child("events").child(key).setValue(true)
 
                             //Uploading the event image with FireBase Storage
                             storeImageFile(key)

@@ -328,7 +328,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
             //Get the DataSnapshot key
             val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+
             myFirebaseRef.child("attendees").child(key!!).child(userId).setValue(true)
+            myFirebaseRef!!.child("users").child(userId).child("events").child(key).setValue(true)
 
         } catch (ex: Exception) {
 

@@ -23,8 +23,8 @@ class CardStackAdapter(
 
 
         holder.title.text = spot.title
-        holder.date.text = " ${spot.date}"
-        holder.time.text = " ${spot.time}"
+        holder.date.text = spot.date
+        holder.time.text = spot.time
 
         Glide.with(holder.image)
                 .load(spot.url)

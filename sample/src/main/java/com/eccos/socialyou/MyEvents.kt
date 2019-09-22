@@ -51,7 +51,7 @@ class MyEvents : AppCompatActivity() {
 
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val ref = myFirebaseRef.child("users").child(userId)
+        val ref = myFirebaseRef.child("users").child(userId).child("events")
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
