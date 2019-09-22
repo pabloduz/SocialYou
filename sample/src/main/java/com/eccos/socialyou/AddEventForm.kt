@@ -249,7 +249,7 @@ class AddEventForm : AppCompatActivity() {
 
                                 finish()
 
-                            }, 1200)
+                            }, 2000)
 
                         } else {
                             Log.e(TAG, "Location is null.")

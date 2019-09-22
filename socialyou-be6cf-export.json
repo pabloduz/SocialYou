@@ -1,0 +1,92 @@
+{
+  "attendees" : {
+    "-LpOuLiMhkyVEwcmSm_X" : {
+      "wxRd104p9NTG0mCTFpq67uMoxUE3" : true
+    },
+    "-LpOvu5XOCRTdnmWockV" : {
+      "wxRd104p9NTG0mCTFpq67uMoxUE3" : true
+    },
+    "-LpOwM6R2R7PEoHnLbeA" : {
+      "wxRd104p9NTG0mCTFpq67uMoxUE3" : true
+    },
+    "-LpOxyM-38hN4_apcLdE" : {
+      "wxRd104p9NTG0mCTFpq67uMoxUE3" : true
+    },
+    "-LpOysQHaiCyAnHhvldK" : {
+      "wxRd104p9NTG0mCTFpq67uMoxUE3" : true
+    }
+  },
+  "events" : {
+    "-LpOuLiMhkyVEwcmSm_X" : {
+      "date" : "07/01/2020",
+      "description" : "The quick\n\nBrown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick\n\n brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick\n\n brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick\n\n brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog",
+      "location" : "The Quick Brown Fox Jumps Over The Lazy Dog",
+      "time" : "12:00",
+      "title" : "The Quick Brown Fox Jumps Over The Lazy Dog The Quick Brown Fox Jumps Over The Lazy Dog"
+    },
+    "-LpOvu5XOCRTdnmWockV" : {
+      "date" : "09/30/2019",
+      "description" : "The Quick Brown Fox",
+      "location" : "The Quick Brown Fox",
+      "time" : "18:05",
+      "title" : "The Quick Brown Fox"
+    },
+    "-LpOwM6R2R7PEoHnLbeA" : {
+      "date" : "09/01/2019",
+      "description" : "Jumps Over",
+      "location" : "Lazy Dog",
+      "time" : "2:05",
+      "title" : "the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog"
+    },
+    "-LpOxyM-38hN4_apcLdE" : {
+      "date" : "12/01/2019",
+      "description" : "Fox Jumps",
+      "location" : "The Quick Brown Fox",
+      "time" : "18:45",
+      "title" : "Over Lazy Dog"
+    },
+    "-LpOysQHaiCyAnHhvldK" : {
+      "date" : "09/01/2019",
+      "description" : "The Quick ",
+      "location" : "Brown Dog",
+      "time" : "17:30",
+      "title" : "Jumps Fox"
+    }
+  },
+  "locations" : {
+    "-LpOuLiMhkyVEwcmSm_X" : {
+      ".priority" : "6gj6zzsy4v",
+      "g" : "6gj6zzsy4v",
+      "l" : [ -27.5993431, -48.519969 ]
+    },
+    "-LpOvu5XOCRTdnmWockV" : {
+      ".priority" : "6gj6zzsy4u",
+      "g" : "6gj6zzsy4u",
+      "l" : [ -27.599347, -48.5199622 ]
+    },
+    "-LpOwM6R2R7PEoHnLbeA" : {
+      ".priority" : "6gj6zzsy4v",
+      "g" : "6gj6zzsy4v",
+      "l" : [ -27.5993447, -48.5199653 ]
+    },
+    "-LpOxyM-38hN4_apcLdE" : {
+      ".priority" : "6gj6zzsy4v",
+      "g" : "6gj6zzsy4v",
+      "l" : [ -27.5993435, -48.5199673 ]
+    },
+    "-LpOysQHaiCyAnHhvldK" : {
+      ".priority" : "6gj6zzsy4v",
+      "g" : "6gj6zzsy4v",
+      "l" : [ -27.5993422, -48.5199684 ]
+    }
+  },
+  "users" : {
+    "wxRd104p9NTG0mCTFpq67uMoxUE3" : {
+      "-LpOuLiMhkyVEwcmSm_X" : true,
+      "-LpOvu5XOCRTdnmWockV" : true,
+      "-LpOwM6R2R7PEoHnLbeA" : true,
+      "-LpOxyM-38hN4_apcLdE" : true,
+      "-LpOysQHaiCyAnHhvldK" : true
+    }
+  }
+}

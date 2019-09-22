@@ -128,7 +128,7 @@ class MyEvents : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = spotAdapter
-        }, 1200)
+        }, 1000)
     }
 
     private fun setWindow() {
