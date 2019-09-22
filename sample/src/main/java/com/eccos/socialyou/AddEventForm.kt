@@ -239,17 +239,6 @@ class AddEventForm : AppCompatActivity() {
                             //Uploading the event image with FireBase Storage
                             storeImageFile(key)
 
-                            var intent= Intent()
-                            setResult(Activity.RESULT_OK, intent)
-
-                            val handler = Handler()
-                            handler.postDelayed({
-                                val myIntent = Intent(this@AddEventForm, MyEvents::class.java)
-                                startActivity(myIntent)
-
-                                finish()
-
-                            }, 2000)
 
                         } else {
                             Log.e(TAG, "Location is null.")
@@ -283,6 +272,18 @@ class AddEventForm : AppCompatActivity() {
                         // Get a URL to the uploaded content
                         val downloadUrl = taskSnapshot.uploadSessionUri
                         Log.e(TAG, "" + downloadUrl!!)
+
+                        var intent= Intent()
+                        setResult(Activity.RESULT_OK, intent)
+
+                        val handler = Handler()
+                        handler.postDelayed({
+                            val myIntent = Intent(this@AddEventForm, MyEvents::class.java)
+                            startActivity(myIntent)
+
+                            finish()
+
+                        }, 0)
                     }
                     .addOnFailureListener {
                         // Handle unsuccessful uploads
