@@ -53,7 +53,6 @@ class ShowEvent : AppCompatActivity() {
 
 
         // setting values to each view
-
         vDate.text = date
         vTime.text = time
         vDescription.text = description

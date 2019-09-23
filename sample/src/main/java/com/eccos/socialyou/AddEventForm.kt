@@ -273,9 +273,6 @@ class AddEventForm : AppCompatActivity() {
                         val downloadUrl = taskSnapshot.uploadSessionUri
                         Log.e(TAG, "" + downloadUrl!!)
 
-                        var intent= Intent()
-                        setResult(Activity.RESULT_OK, intent)
-
                         val handler = Handler()
                         handler.postDelayed({
                             val myIntent = Intent(this@AddEventForm, MyEvents::class.java)
@@ -387,6 +384,17 @@ class AddEventForm : AppCompatActivity() {
             fusedLocationClient!!.requestLocationUpdates(locationRequestNew,
                     locationCallback!!, null/* Looper */)
         }
+    }
+
+    override fun onBackPressed() {
+        persistBeforeActivities()
+        super.onBackPressed()
+    }
+
+
+    private fun persistBeforeActivities() {
+        var intent= Intent()
+        setResult(Activity.RESULT_OK, intent)
     }
 
     /**

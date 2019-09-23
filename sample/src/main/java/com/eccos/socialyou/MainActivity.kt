@@ -4,11 +4,9 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
@@ -26,7 +24,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.eccos.socialyou.cardstackview.*
 import com.firebase.client.Firebase
@@ -35,7 +32,6 @@ import com.firebase.client.ValueEventListener
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryDataEventListener
-import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +41,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.my_events.view.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -55,7 +50,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private val adapter by lazy { CardStackAdapter(createSpots()) }
     private val myLocationPermissionRequest = 101
-    private val closeActivity = 10
+    private val persistActivity = 10
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
 
@@ -146,6 +141,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Update UI with location data
                         val myLocation = LatLng(location.latitude, location.longitude)
 
+                        Log.e(tag, "${myLocation.latitude} and ${myLocation.longitude}")
+
                         Log.e(tag, "startLocationUpdate CALLED")
 
                         getSpots(myLocation)
@@ -166,8 +163,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private fun getSpots(myLocation: LatLng) {
         val ref = FirebaseDatabase.getInstance().getReference("/locations")
 
-//        Log.e(tag, "${myLocation.latitude} and ${myLocation.longitude}")
-
         val geoFire = GeoFire(ref)
 
         val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 5.00)
@@ -182,10 +177,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
                     if(firstSpot){
                         createProgressBar()
-                        
+
                         firstSpot= false
                     }
-                    
+
                     showSpots(key)
                 }
             }
@@ -240,11 +235,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Got the download URL
                         var url= it.toString()
 
+                        addLast(1, key, title, date, time, location, description, url)
+
                         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
                         progressBar.visibility = View.GONE
-
-
-                        addLast(1, key, title, date, time, location, description, url)
 
                     }.addOnFailureListener {
                         // Handle any errors
@@ -339,7 +333,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     }
 
-
     private fun addSpotSwiped(key: String) {
         Log.d("CardStackView", "onCardSwiped: key = $key")
         spotsSwiped.remove("null")
@@ -349,10 +342,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val json = Gson().toJson(spotsSwiped)
         pref.edit().putString("spotsSwiped", json).commit()
-
     }
-
-
 
     override fun onCardRewound() {
         Log.d("CardStackView", "onCardRewound: ${manager.topPosition}")
@@ -372,29 +362,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Log.d("CardStackView", "onCardDisappeared: ($position) ${textView.text}")
     }
 
-    private fun setupNavigation() {
-        // Toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        // DrawerLayout
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
-        actionBarDrawerToggle.syncState()
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
-
-        // NavigationView
-        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.home_page -> home()
-                R.id.my_events -> myEvents()
-                R.id.add_event -> addEvent()
-                R.id.nearby_users -> nerbyUsers()
-            }
-            drawerLayout.closeDrawers()
-            true
-        }
-    }
 
     private fun setupCardStackView() {
         initialize()
@@ -456,36 +423,56 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         }
     }
 
-    private fun home() {
+    private fun setupNavigation() {
+        // Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
+        // DrawerLayout
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+        actionBarDrawerToggle.syncState()
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+
+        // NavigationView
+        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.my_events -> myEvents()
+                R.id.add_event -> addEvent()
+                R.id.nearby_users -> nerbyUsers()
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
     }
 
     private fun myEvents() {
         val myIntent = Intent(this@MainActivity, MyEvents::class.java)
-        startActivityForResult(myIntent, closeActivity)
+        startActivityForResult(myIntent, persistActivity)
     }
 
 
     private fun addEvent() {
         val myIntent = Intent(this@MainActivity, AddEventForm::class.java)
-        startActivityForResult(myIntent, closeActivity)
+        startActivityForResult(myIntent, persistActivity)
     }
 
     private fun nerbyUsers() {
         val myIntent = Intent(this@MainActivity, NearbyUsers::class.java)
-        startActivityForResult(myIntent, closeActivity)
+        startActivityForResult(myIntent, persistActivity)
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Check which request we're responding to
-        if (requestCode == closeActivity) {
+        if (requestCode == persistActivity) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
-                Log.e(tag, "onActivityResult called!")
+                Log.e(tag, "result code ok called!")
 
+            }else{
+                Log.e(tag, "result code not ok called!")
                 finish()
             }
         }
@@ -516,7 +503,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun createSpots(): List<Spot> {
-        val spots = ArrayList<Spot>()
-        return spots
+        return ArrayList()
     }
 }

@@ -33,7 +33,7 @@ import java.util.ArrayList
 
 class MyEvents : AppCompatActivity() {
 
-    private val eventCreated: Int = 101
+    private val persistActivity: Int = 101
     var spots: ArrayList<Spot>? = null
 
 
@@ -104,7 +104,6 @@ class MyEvents : AppCompatActivity() {
             override fun onCancelled(firebaseError: FirebaseError) {
 
             }
-
         })
     }
 
@@ -157,7 +156,7 @@ class MyEvents : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.home_page -> home()
                 R.id.add_event -> addEvent()
-                R.id.my_events -> myEvents()
+                R.id.nearby_users -> nearbyUsers()
 
             }
             drawerLayout.closeDrawers()
@@ -166,37 +165,37 @@ class MyEvents : AppCompatActivity() {
     }
 
     private fun home() {
-        //Close the waiting MainActivity
-        var intent= Intent()
-        setResult(Activity.RESULT_OK, intent)
-
         val myIntent = Intent(this@MyEvents, MainActivity::class.java)
+        startActivity(myIntent)
+        finish()
+    }
+
+    private fun nearbyUsers() {
+        val myIntent = Intent(this@MyEvents, NearbyUsers::class.java)
         startActivity(myIntent)
         finish()
     }
 
     private fun addEvent() {
         val myIntent = Intent(this@MyEvents, AddEventForm::class.java)
-        startActivityForResult(myIntent, eventCreated)
+        startActivityForResult(myIntent, persistActivity)
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Check which request we're responding to
-        if (requestCode == eventCreated) {
+        if (requestCode == persistActivity) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
-                Log.e(tag, "onActivityResult called!")
+                Log.e(tag, "result code ok called!")
 
+            }else{
+                Log.e(tag, "result code not ok called!")
                 finish()
             }
         }
     }
-
-    private fun myEvents() {
-    }
-
 
     override fun onResume() {
         super.onResume()
@@ -208,8 +207,14 @@ class MyEvents : AppCompatActivity() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers()
         } else {
+            persistMainActivity()
             super.onBackPressed()
         }
+    }
+
+    private fun persistMainActivity() {
+        var intent= Intent()
+        setResult(Activity.RESULT_OK, intent)
     }
 
     companion object {
