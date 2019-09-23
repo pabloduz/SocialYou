@@ -28,7 +28,6 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
     List<Spot> mData ;
 
 
-
     public SpotAdapter(Context mContext, List<Spot> mData) {
         this.mContext = mContext;
         this.mData = mData;
