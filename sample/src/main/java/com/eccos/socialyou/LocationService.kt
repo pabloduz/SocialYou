@@ -121,6 +121,6 @@ class LocationService : Service() {
     companion object {
         private val TAG = "BOOMBOOMTESTGPS"
         private val LOCATION_INTERVAL = 15000
-        private val LOCATION_DISTANCE = 20f
+        private val LOCATION_DISTANCE = 5f
     }
 }

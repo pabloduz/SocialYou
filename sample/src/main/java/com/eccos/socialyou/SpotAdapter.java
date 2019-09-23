@@ -51,7 +51,6 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-
                 Intent i = new Intent(mContext, ShowEvent.class);
                 i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
                 i.putExtra("title",mData.get(viewHolder.getAdapterPosition()).getTitle());
@@ -62,7 +61,6 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
                 i.putExtra("url",mData.get(viewHolder.getAdapterPosition()).getUrl());
 
                 mContext.startActivity(i);
-
             }
         });
         return viewHolder;

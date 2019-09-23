@@ -57,6 +57,9 @@ class NearbyUsers : AppCompatActivity() {
 
         Firebase.setAndroidContext(this)
 
+        createLocationRequest()
+        startLocationUpdates()
+
         setupNavigation()
 
         users = ArrayList()
@@ -217,7 +220,7 @@ class NearbyUsers : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = spotAdapter
-        }, 2000)
+        }, 1750)
     }
 
     private fun setWindow() {
@@ -290,9 +293,6 @@ class NearbyUsers : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        createLocationRequest()
-        startLocationUpdates()
 
         setWindow()
     }

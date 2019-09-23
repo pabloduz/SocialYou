@@ -235,10 +235,10 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         // Got the download URL
                         var url= it.toString()
 
-                        addLast(1, key, title, date, time, location, description, url)
-
                         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
                         progressBar.visibility = View.GONE
+
+                        addLast(1, key, title, date, time, location, description, url)
 
                     }.addOnFailureListener {
                         // Handle any errors
