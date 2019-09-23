@@ -8,7 +8,7 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
     <string name="home">Home</string>
-    <string name="add_event">Add an Event</string>
+    <string name="add_event">Add Event</string>
     <string name="my_events">My Events</string>
 
     <string name="facebook_application_id" translatable="false">501310727318410</string>
@@ -34,5 +34,7 @@
     <string name="location">Location</string>
     <string name="event_description">Event Description</string>
     <string name="amazing_event">Amazing Event</string>
+    <string name="no_user">No users nearby\\nWalk around!</string>
+    <string name="nearby_user">Nearby Users</string>
 
 </resources>

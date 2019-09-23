@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.eccos.socialyou">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:label="@string/app_name"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
-        <activity android:name="com.eccos.socialyou.AuthActivity"
+        <activity android:name=".NearbyUsers"></activity>
+        <activity
+            android:name=".AuthActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.eccos.socialyou.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="com.eccos.socialyou.AddEventForm"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="com.eccos.socialyou.MyEvents"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name="com.eccos.socialyou.ShowEvent"
-            android:screenOrientation="portrait">
-        </activity>
-        <service android:name="com.eccos.socialyou.LocationService"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".AddEventForm"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".MyEvents"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ShowEvent"
+            android:screenOrientation="portrait"></activity>
 
+        <service android:name=".LocationService" />
     </application>
 
 </manifest>

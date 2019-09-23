@@ -55,8 +55,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val manager by lazy { CardStackLayoutManager(this, this) }
     private val adapter by lazy { CardStackAdapter(createSpots()) }
     private val myLocationPermissionRequest = 101
-    private val eventCreated = 10
-    private val myEvents: Int = 1
+    private val closeActivity = 10
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
 
@@ -388,9 +387,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home_page -> home()
-                R.id.add_event -> addEvent()
                 R.id.my_events -> myEvents()
-
+                R.id.add_event -> addEvent()
+                R.id.nearby_users -> nerbyUsers()
             }
             drawerLayout.closeDrawers()
             true
@@ -461,16 +460,28 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     }
 
+    private fun myEvents() {
+        val myIntent = Intent(this@MainActivity, MyEvents::class.java)
+        startActivityForResult(myIntent, closeActivity)
+    }
+
+
     private fun addEvent() {
         val myIntent = Intent(this@MainActivity, AddEventForm::class.java)
-        startActivityForResult(myIntent, eventCreated)
+        startActivityForResult(myIntent, closeActivity)
     }
+
+    private fun nerbyUsers() {
+        val myIntent = Intent(this@MainActivity, NearbyUsers::class.java)
+        startActivityForResult(myIntent, closeActivity)
+    }
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Check which request we're responding to
-        if (requestCode == eventCreated) {
+        if (requestCode == closeActivity) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
                 Log.e(tag, "onActivityResult called!")
@@ -478,19 +489,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 finish()
             }
         }
-        if (requestCode == myEvents) {
-            // Make sure the request was successful
-            if (resultCode == Activity.RESULT_OK) {
-                Log.e(tag, "onActivityResult called!")
-
-                finish()
-            }
-        }
-    }
-
-    private fun myEvents() {
-        val myIntent = Intent(this@MainActivity, MyEvents::class.java)
-        startActivityForResult(myIntent, eventCreated)
     }
 
     private fun addLast(size: Int, key: String, title: String, date: String, time: String, location: String, description: String, url: String) {

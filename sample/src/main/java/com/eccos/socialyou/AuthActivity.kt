@@ -106,9 +106,9 @@ class AuthActivity : AppCompatActivity() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         //Saving all data with FireBase
-        mInformation.put("title", name.toString())
-        mInformation.put("date", email.toString())
-        mInformation.put("time", photoLarge)
+        mInformation.put("name", name.toString())
+        mInformation.put("email", email.toString())
+        mInformation.put("url", photoLarge)
 
         val fb = myFirebaseRef!!.child("users").child(userId)
         fb.setValue(mInformation)

@@ -17,4 +17,8 @@
         android:title="@string/add_event"
         />
 
+    <item
+        android:id="@+id/nearby_users"
+        android:title="@string/nearby_user"
+        />
 </menu>
