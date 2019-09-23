@@ -128,7 +128,7 @@ class MyEvents : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = spotAdapter
-        }, 1000)
+        }, 1250)
     }
 
     private fun setWindow() {
@@ -166,6 +166,10 @@ class MyEvents : AppCompatActivity() {
     }
 
     private fun home() {
+        //Close the waiting MainActivity
+        var intent= Intent()
+        setResult(Activity.RESULT_OK, intent)
+
         val myIntent = Intent(this@MyEvents, MainActivity::class.java)
         startActivity(myIntent)
         finish()

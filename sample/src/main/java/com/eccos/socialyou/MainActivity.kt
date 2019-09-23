@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val adapter by lazy { CardStackAdapter(createSpots()) }
     private val myLocationPermissionRequest = 101
     private val eventCreated = 10
+    private val myEvents: Int = 1
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
 
@@ -477,12 +478,19 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 finish()
             }
         }
+        if (requestCode == myEvents) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                Log.e(tag, "onActivityResult called!")
+
+                finish()
+            }
+        }
     }
 
     private fun myEvents() {
         val myIntent = Intent(this@MainActivity, MyEvents::class.java)
-        startActivity(myIntent)
-        finish()
+        startActivityForResult(myIntent, eventCreated)
     }
 
     private fun addLast(size: Int, key: String, title: String, date: String, time: String, location: String, description: String, url: String) {
