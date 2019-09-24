@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="350dp"
+    android:layout_width="325dp"
     android:layout_height="475dp"
     android:background="@color/colorPrimaryDark"
     android:padding="5dp"
@@ -17,51 +17,69 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:background="@drawable/circle"/>
+            android:drawable="@drawable/circle"/>
         <TextView
+            android:id="@+id/welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="@string/welcome"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:textColor="@color/white"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="100dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:layout_marginBottom="20dp"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:text="@string/question" />
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="18dp"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:text="@string/link" />
 
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="65dp"
-                android:layout_marginTop="50dp"
-                android:ems="10"
-                android:textSize="15dp"
-                android:hint="@string/fb_profile"
-                android:inputType="text"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#FFFFFF"
-                android:autofillHints="@string/fb_profile" />
-        </LinearLayout>
+        <EditText
+            android:id="@+id/profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autofillHints="@string/fb_profile"
+            android:drawableRight="@drawable/ic_edit_black_24dp"
+            android:hint="@string/fb_profile"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:textSize="16dp"
+            android:drawableEnd="@drawable/ic_edit_black_24dp" />
     </LinearLayout>
-
     <Button
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/next"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/popup_button_style"
         android:textColor="@color/white"/>

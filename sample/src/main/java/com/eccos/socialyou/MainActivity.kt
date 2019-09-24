@@ -6,6 +6,10 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -16,6 +20,8 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -44,7 +50,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.custom_popup.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -57,6 +62,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val persistActivity = 10
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
+    private var mWebView: WebView? = null
+
+
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationCallback: LocationCallback? = null
@@ -69,9 +77,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        Log.e(tag, "$intent")
-
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
 
@@ -79,12 +84,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupNavigation()
         setupCardStackView()
         setupButton()
-
-        showPopup()
     }
 
+
     private fun showPopup() {
-        Log.e(tag, "$callingActivity")
+        Log.e(tag, "Calling activity: $callingActivity")
 
         if(callingActivity != null){
             Log.e(tag, callingActivity.shortClassName)
@@ -93,26 +97,33 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 var myDialog = Dialog(this)
                 myDialog.setContentView(R.layout.custom_popup)
 
-                val name = intent.extras!!.getString("name")
+                val nameUrl = intent.extras!!.getString("nameUrl")
                 val url = intent.extras!!.getString("url")
 
-                Log.e(tag, url)
+                var vProfile= myDialog.findViewById<TextView>(R.id.profile)
+                var vImage= myDialog.findViewById<ImageView>(R.id.image)
 
-                var image= myDialog.findViewById<ImageView>(R.id.image)
+                vProfile.text = nameUrl
 
-                Log.e(tag, "$image")
+                val requestOptions = RequestOptions().circleCrop().placeholder(R.drawable.circle).error(R.drawable.circle)
 
-
-                val requestOptions = RequestOptions().centerCrop().placeholder(R.drawable.circle).error(R.drawable.circle)
-
-                Glide.with(this).load(url).apply(requestOptions).into(image)
+                Glide.with(this).load(url).apply(requestOptions).into(vImage)
 
                 var btnNext =  myDialog.findViewById<Button>(R.id.next)
                 btnNext.setOnClickListener {
+                    //Getting reference to Firebase
+                    var myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+
+                    val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+                    var url = "fb.com/${vProfile.text}"
+
+                    myFirebaseRef!!.child("users").child(userId).child("profile").setValue(url)
+
                     myDialog.dismiss()
                 }
 
-//              myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT))
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 myDialog.show()
             }
         }
@@ -359,6 +370,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         //addSpotSwiped(key)
 
+        showPopup()
+
     }
 
     private fun insertAttendee(key: String) {
@@ -551,3 +564,4 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         return ArrayList()
     }
 }
+

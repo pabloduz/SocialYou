@@ -43,10 +43,10 @@
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="Profile"
             android:textAlignment="center"
             android:textSize="15sp"
-            android:drawableLeft="@drawable/ic_email_black_24dp"
-            android:id="@+id/email"/>
+            android:drawableLeft="@drawable/ic_facebook_black_24dp"
+            android:id="@+id/profile"/>
     </LinearLayout>
 </LinearLayout>

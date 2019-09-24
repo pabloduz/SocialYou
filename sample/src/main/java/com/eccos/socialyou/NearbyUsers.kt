@@ -175,10 +175,10 @@ class NearbyUsers : AppCompatActivity() {
                     val data = dataSnapshot.value as Map<*, *>
 
                     val name = data["name"] as String
-                    val email = data["email"] as String
+                    val profile = data["profile"] as String
                     val url = data["url"] as String
 
-                    val spot = User(key, name, email, url)
+                    val spot = User(key, name, profile, url)
 
                     users!!.add(spot)
 

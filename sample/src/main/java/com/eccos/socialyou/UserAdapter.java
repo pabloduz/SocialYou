@@ -3,6 +3,7 @@ package com.eccos.socialyou;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,13 +51,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         viewHolder.view_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(mContext, ShowEvent.class);
-//                i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
-//                i.putExtra("name",mData.get(viewHolder.getAdapterPosition()).getName());
-//                i.putExtra("email",mData.get(viewHolder.getAdapterPosition()).getEmail());
-//                i.putExtra("url",mData.get(viewHolder.getAdapterPosition()).getUrl());
-//
-//                mContext.startActivity(i);
+                String url= "http://"+ mData.get(viewHolder.getAdapterPosition()).getProfile();
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                mContext.startActivity(browserIntent);
             }
         });
         return viewHolder;
@@ -78,7 +76,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.name.setText(title);
         }
 
-        holder.email.setText(item.getEmail());
+        holder.profile.setText(item.getProfile());
         Glide.with(mContext).load(item.getUrl()).apply(option).into(holder.img_thumbnail);
     }
 
@@ -91,7 +89,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder
     {
         TextView name;
-        TextView email;
+        TextView profile;
         ImageView img_thumbnail;
         LinearLayout view_container;
 
@@ -99,7 +97,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         {
             super(itemView);
             name = itemView.findViewById(R.id.name);
-            email = itemView.findViewById(R.id.email);
+            profile = itemView.findViewById(R.id.profile);
             img_thumbnail = itemView.findViewById(R.id.thumbnail);
             view_container = itemView.findViewById(R.id.container);
 

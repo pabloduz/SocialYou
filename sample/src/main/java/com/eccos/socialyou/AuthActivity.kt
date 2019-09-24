@@ -15,6 +15,8 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import java.text.Normalizer
+
 
 class AuthActivity : AppCompatActivity() {
 
@@ -97,12 +99,17 @@ class AuthActivity : AppCompatActivity() {
 
     private fun getUserInfo(): Intent {
         val name = FirebaseAuth.getInstance().currentUser!!.displayName
+
+        //Converting to a standardized string
+        var nameUrl= name!!.replace(" ", "").toLowerCase()
+        nameUrl= stripAccents(nameUrl)
+
+        //Assuming the user Facebook profile
+        val profile = "fb.com/$nameUrl"
+
+        //Making the photo larger
         val photoUrl =  FirebaseAuth.getInstance().currentUser!!.photoUrl
-
-        val photoLarge=  "$photoUrl?type=large"
-
-        Log.e("AuthActivity", name)
-        Log.e("AuthActivity", photoLarge)
+        val url=  "$photoUrl?type=large"
 
         //Getting reference to Firebase
         myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
@@ -113,18 +120,25 @@ class AuthActivity : AppCompatActivity() {
 
         //Saving all data with FireBase
         mInformation.put("name", name.toString())
-        mInformation.put("url", photoLarge)
+        mInformation.put("profile", profile)
+        mInformation.put("url", url)
 
         val fb = myFirebaseRef!!.child("users").child(userId)
         fb.setValue(mInformation)
 
         var intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("name", name)
-        intent.putExtra("url", photoLarge)
+        intent.putExtra("nameUrl", "$nameUrl")
+        intent.putExtra("url", url)
 
         return intent
     }
 
+    private fun stripAccents(s: String): String {
+        var s = s
+        s = Normalizer.normalize(s, Normalizer.Form.NFD)
+        s = s.replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+        return s
+    }
 
     private fun createIntent(): Intent {
         return Intent(this, MainActivity::class.java)

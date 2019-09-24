@@ -37,6 +37,9 @@
     <string name="no_user">No users nearby\nWalk around!</string>
     <string name="nearby_user">Nearby Users</string>
     <string name="next">Next</string>
-    <string name="fb_profile">facebook.com/</string>
+    <string name="fb_profile">username</string>
+    <string name="welcome">Good Job!</string>
+    <string name="question">Is that your profile link?</string>
+    <string name="link">facebook.com/</string>
 
 </resources>
