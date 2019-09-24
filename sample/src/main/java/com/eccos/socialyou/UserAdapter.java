@@ -50,16 +50,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         viewHolder.view_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                Intent i = new Intent(mContext, ShowEvent.class);
-                i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
-                i.putExtra("name",mData.get(viewHolder.getAdapterPosition()).getName());
-                i.putExtra("email",mData.get(viewHolder.getAdapterPosition()).getEmail());
-                i.putExtra("url",mData.get(viewHolder.getAdapterPosition()).getUrl());
-
-                mContext.startActivity(i);
-
+//                Intent i = new Intent(mContext, ShowEvent.class);
+//                i.putExtra("key",mData.get(viewHolder.getAdapterPosition()).getKey());
+//                i.putExtra("name",mData.get(viewHolder.getAdapterPosition()).getName());
+//                i.putExtra("email",mData.get(viewHolder.getAdapterPosition()).getEmail());
+//                i.putExtra("url",mData.get(viewHolder.getAdapterPosition()).getUrl());
+//
+//                mContext.startActivity(i);
             }
         });
         return viewHolder;

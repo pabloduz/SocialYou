@@ -66,6 +66,7 @@ public class SpotAdapter extends RecyclerView.Adapter<SpotAdapter.ViewHolder> {
         return viewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Spot item = mData.get(position);

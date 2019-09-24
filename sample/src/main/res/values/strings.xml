@@ -34,7 +34,9 @@
     <string name="location">Location</string>
     <string name="event_description">Event Description</string>
     <string name="amazing_event">Amazing Event</string>
-    <string name="no_user">No users nearby\\nWalk around!</string>
+    <string name="no_user">No users nearby\nWalk around!</string>
     <string name="nearby_user">Nearby Users</string>
+    <string name="next">Next</string>
+    <string name="fb_profile">facebook.com/</string>
 
 </resources>

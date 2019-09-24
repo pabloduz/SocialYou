@@ -2,6 +2,7 @@ package com.eccos.socialyou
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -24,6 +25,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.navigation.NavigationView
 import com.eccos.socialyou.cardstackview.*
 import com.firebase.client.Firebase
@@ -41,6 +44,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.custom_popup.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -65,6 +69,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+        Log.e(tag, "$intent")
+
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
 
@@ -72,7 +79,45 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupNavigation()
         setupCardStackView()
         setupButton()
+
+        showPopup()
     }
+
+    private fun showPopup() {
+        Log.e(tag, "$callingActivity")
+
+        if(callingActivity != null){
+            Log.e(tag, callingActivity.shortClassName)
+
+            if(callingActivity.shortClassName == ".AuthActivity"){
+                var myDialog = Dialog(this)
+                myDialog.setContentView(R.layout.custom_popup)
+
+                val name = intent.extras!!.getString("name")
+                val url = intent.extras!!.getString("url")
+
+                Log.e(tag, url)
+
+                var image= myDialog.findViewById<ImageView>(R.id.image)
+
+                Log.e(tag, "$image")
+
+
+                val requestOptions = RequestOptions().centerCrop().placeholder(R.drawable.circle).error(R.drawable.circle)
+
+                Glide.with(this).load(url).apply(requestOptions).into(image)
+
+                var btnNext =  myDialog.findViewById<Button>(R.id.next)
+                btnNext.setOnClickListener {
+                    myDialog.dismiss()
+                }
+
+//              myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT))
+                myDialog.show()
+            }
+        }
+    }
+
 
     private fun setWindow() {
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE

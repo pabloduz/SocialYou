@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 class AuthActivity : AppCompatActivity() {
 
     private var myFirebaseRef: Firebase? = null
+    private val dataRetrieved = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +59,9 @@ class AuthActivity : AppCompatActivity() {
             // Successfully signed in
             if (resultCode == Activity.RESULT_OK) {
 
-                getUserInfo()
+                var intent= getUserInfo()
 
-                startActivity(this.createIntent())
+                startActivityForResult(intent, dataRetrieved)
 
                 // Finish my layout
                 finish()
@@ -85,17 +86,22 @@ class AuthActivity : AppCompatActivity() {
                 Log.e(TAG, "Sign-in error: ", response.error)
             }
         }
+
+        if (requestCode == dataRetrieved) {
+            // Make sure the request was successful
+            if (resultCode != Activity.RESULT_OK) {
+                finish()
+            }
+        }
     }
 
-    private fun getUserInfo() {
+    private fun getUserInfo(): Intent {
         val name = FirebaseAuth.getInstance().currentUser!!.displayName
-        val email = FirebaseAuth.getInstance().currentUser!!.email
         val photoUrl =  FirebaseAuth.getInstance().currentUser!!.photoUrl
 
         val photoLarge=  "$photoUrl?type=large"
 
         Log.e("AuthActivity", name)
-        Log.e("AuthActivity", email)
         Log.e("AuthActivity", photoLarge)
 
         //Getting reference to Firebase
@@ -107,11 +113,16 @@ class AuthActivity : AppCompatActivity() {
 
         //Saving all data with FireBase
         mInformation.put("name", name.toString())
-        mInformation.put("email", email.toString())
         mInformation.put("url", photoLarge)
 
         val fb = myFirebaseRef!!.child("users").child(userId)
         fb.setValue(mInformation)
+
+        var intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("name", name)
+        intent.putExtra("url", photoLarge)
+
+        return intent
     }
 
 
