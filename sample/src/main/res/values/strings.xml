@@ -30,7 +30,7 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on Events near you\n\nOr even better create\n\nYours!\n\n</string>
+    <string name="no_event">Swipe on Events near you\n\nOr even better create\n\nYours!\n</string>
     <string name="location">Location</string>
     <string name="event_description">Eventzy Description</string>
     <string name="amazing_meeting">Amazing Meeting</string>

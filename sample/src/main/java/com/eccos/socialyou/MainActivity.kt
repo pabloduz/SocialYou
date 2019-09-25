@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         when (requestCode) {
             myLocationPermissionRequest ->
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showPopupWelcome()
+//                    showPopupWelcome()
 
                     startLocationUpdates()
 
