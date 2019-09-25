@@ -42,8 +42,8 @@ class AuthActivity : AppCompatActivity() {
                             .createSignInIntentBuilder()
                             .setAvailableProviders(listOf(
                                     AuthUI.IdpConfig.FacebookBuilder().build(),
-                                    AuthUI.IdpConfig.GoogleBuilder().build(),
-                                    AuthUI.IdpConfig.EmailBuilder().build()))
+                                    AuthUI.IdpConfig.EmailBuilder().build(),
+                                    AuthUI.IdpConfig.GoogleBuilder().build()))
                             .setTheme(R.style.AppTheme)
                             .setIsSmartLockEnabled(false)
                             .setLogo(R.mipmap.ic_launcher).build(),

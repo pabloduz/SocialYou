@@ -10,11 +10,9 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -46,14 +44,14 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-import android.os.SystemClock.sleep
-import android.text.InputType
-import android.view.MotionEvent
+import android.preference.PreferenceManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.add_event_form.*
+import java.util.ArrayList
 
 
 class AddEventForm : AppCompatActivity() {
@@ -69,6 +67,8 @@ class AddEventForm : AppCompatActivity() {
 
     private var mImageUri: Uri? = null
 
+    private var spotsSwiped = ArrayList<String>()
+
     private var title: EditText? = null
     private var date: EditText? = null
     private var time: EditText? = null
@@ -81,6 +81,7 @@ class AddEventForm : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Firebase.setAndroidContext(this)
         setContentView(R.layout.add_event_form)
+
 
         //Getting references to Firebase
         storageRef = FirebaseStorage.getInstance().reference
@@ -239,6 +240,7 @@ class AddEventForm : AppCompatActivity() {
                             //Uploading the event image with FireBase Storage
                             storeImageFile(key)
 
+                            addSpotSwiped(key)
 
                         } else {
                             Log.e(TAG, "Location is null.")
@@ -290,7 +292,6 @@ class AddEventForm : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
     }
 
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
@@ -299,6 +300,19 @@ class AddEventForm : AppCompatActivity() {
         val path = MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage,
                 "SocialYou - What and Who is Next to Me", "Find more about the app on the PlayStore.")
         return Uri.parse(path)
+    }
+
+    private fun addSpotSwiped(key: String) {
+        var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val json = pref.getString("spotsSwiped", null)
+
+        val collectionType = object : TypeToken<ArrayList<String>>() {}.type
+        spotsSwiped = Gson().fromJson(json, collectionType)
+
+        spotsSwiped.add(key)
+
+        val json1 = Gson().toJson(spotsSwiped)
+        pref.edit().putString("spotsSwiped", json1).commit()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

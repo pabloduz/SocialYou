@@ -6,10 +6,8 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -62,7 +60,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val persistActivity = 10
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
-    private var mWebView: WebView? = null
 
 
 
@@ -84,6 +81,54 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupNavigation()
         setupCardStackView()
         setupButton()
+
+        showExampleSpot()
+    }
+
+    private fun showExampleSpot() {
+        if(callingActivity != null){
+            if(callingActivity.shortClassName == ".AuthActivity") {
+                try {
+                    //Get the DataSnapshot key
+                    val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+                    val ref = myFirebaseRef.child("events").child("-LpcZ9nUG6ecI5RkyTpQ")
+
+                    ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                        override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
+
+                            val data = dataSnapshot.value as Map<*, *>
+
+                            val title = data["title"] as String
+                            val date = data["date"] as String
+                            val time = data["time"] as String
+                            val location = data["location"] as String
+                            val description = data["description"] as String
+
+
+                            var storageRef = FirebaseStorage.getInstance().reference
+
+
+                            storageRef.child("-LpcZ9nUG6ecI5RkyTpQ").downloadUrl.addOnSuccessListener {
+                                // Got the download URL
+                                var url = it.toString()
+
+                                addLast(1, "-LpcZ9nUG6ecI5RkyTpQ", title, date, time, location, description, url)
+
+                            }.addOnFailureListener {
+                                // Handle any errors
+                            }
+                        }
+
+                        override fun onCancelled(firebaseError: FirebaseError) {}
+                    })
+
+                } catch (ex: Exception) {
+
+                    Log.e(tag, "FireBase exception: " + ex.message)
+                }
+            }
+        }
     }
 
 
@@ -147,6 +192,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         arrayList.add("null")
         val list = Gson().toJson(arrayList)
         val json = pref.getString("spotsSwiped", list)
+
+        pref.edit().putString("spotsSwiped", json).apply()
 
         val collectionType = object : TypeToken<ArrayList<String>>() {}.type
         spotsSwiped = Gson().fromJson(json, collectionType)

@@ -220,7 +220,7 @@ class NearbyUsers : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = spotAdapter
-        }, 1750)
+        }, 2000)
     }
 
     private fun setWindow() {

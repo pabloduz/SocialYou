@@ -30,16 +30,16 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on Events or\nCreate yours!\n\n\n\n</string>
+    <string name="no_event">Swipe on Events near you\n\nOr better create\n\nYours!\n\n</string>
     <string name="location">Location</string>
     <string name="event_description">Event Description</string>
     <string name="amazing_event">Amazing Event</string>
-    <string name="no_user">No users nearby\nWalk around!</string>
+    <string name="no_user">No users nearby\n\nWalk around!\n\n\n</string>
     <string name="nearby_user">Nearby Users</string>
     <string name="next">Next</string>
     <string name="fb_profile">username</string>
     <string name="welcome">Good Job!</string>
-    <string name="question">Is that your profile link?</string>
+    <string name="question">Is that your profile page?</string>
     <string name="link">facebook.com/</string>
 
 </resources>

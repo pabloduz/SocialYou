@@ -77,9 +77,6 @@ class MyEvents : AppCompatActivity() {
 
                             val storageRef = FirebaseStorage.getInstance().reference
 
-                            Log.e(tag, "FOR")
-
-
                             storageRef.child(key).downloadUrl.addOnSuccessListener { uri ->
                                 // Got the download URL for 'users/me/profile.png'
                                 val url = uri.toString()
