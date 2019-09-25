@@ -110,13 +110,13 @@ class AddEventForm : AppCompatActivity() {
         }
 
 
-        val button = findViewById<View>(R.id.send_button) as Button
-        button.setOnClickListener {
+        val sendButton = findViewById<View>(R.id.send_button) as Button
+        sendButton.setOnClickListener {
             if (checkTextFields()) {
 
                 if (mImageUri != null) {
-                    val button = findViewById<Button>(R.id.send_button)
-                    button.visibility = View.INVISIBLE
+                    val sendButton = findViewById<Button>(R.id.send_button)
+                    sendButton.visibility = View.INVISIBLE
 
                     val progressBar = findViewById<ProgressBar>(R.id.progressBar)
                     progressBar.visibility = View.VISIBLE
@@ -127,6 +127,9 @@ class AddEventForm : AppCompatActivity() {
                 }
             }
         }
+
+        showSnackbar(R.string.add_event_message)
+
     }
 
 
@@ -437,7 +440,7 @@ class AddEventForm : AppCompatActivity() {
     private fun showSnackbar(text: Int) {
         val contextView = findViewById<View>(android.R.id.content)
 
-        Snackbar.make(contextView, text, Snackbar.LENGTH_SHORT)
+        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
                 .show()
     }
 

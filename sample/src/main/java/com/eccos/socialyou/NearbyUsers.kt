@@ -34,6 +34,7 @@ import com.firebase.geofire.GeoQueryDataEventListener
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -63,6 +64,8 @@ class NearbyUsers : AppCompatActivity() {
         setupNavigation()
 
         users = ArrayList()
+
+        showSnackbar(R.string.nearby_user_message)
     }
 
     private fun createLocationRequest() {
@@ -319,6 +322,13 @@ class NearbyUsers : AppCompatActivity() {
     private fun persistMainActivity() {
         var intent= Intent()
         setResult(Activity.RESULT_OK, intent)
+    }
+
+    private fun showSnackbar(text: Int) {
+        val contextView = findViewById<View>(android.R.id.content)
+
+        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
+                .show()
     }
 
     companion object {

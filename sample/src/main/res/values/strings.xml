@@ -8,8 +8,8 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
     <string name="home">Home</string>
-    <string name="add_event">Add Event</string>
-    <string name="my_events">My Events</string>
+    <string name="add_event">Add Meeting</string>
+    <string name="my_events">My Meetings</string>
 
     <string name="facebook_application_id" translatable="false">501310727318410</string>
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
@@ -21,8 +21,8 @@
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="description">Description</string>
-    <string name="slogan">Share events,</string>
-    <string name="slogan2">Find local people.</string>
+    <string name="slogan">Share moments,</string>
+    <string name="slogan2">Meet local people.</string>
     <string name="send">Send</string>
     <string name="image">Click to Select Image</string>
     <string name="select_image">Select an image first.</string>
@@ -30,16 +30,26 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on Events near you\n\nOr better create\n\nYours!\n\n</string>
+    <string name="no_event">Swipe on Events near you\n\nEven better create\n\nYours!\n\n</string>
     <string name="location">Location</string>
-    <string name="event_description">Event Description</string>
-    <string name="amazing_event">Amazing Event</string>
+    <string name="event_description">Eventzy Description</string>
+    <string name="amazing_meeting">Amazing Meeting</string>
     <string name="no_user">No users nearby\n\nWalk around!\n\n\n</string>
     <string name="nearby_user">Nearby Users</string>
     <string name="next">Next</string>
     <string name="fb_profile">username</string>
-    <string name="welcome">Good Job!</string>
-    <string name="question">Is that your profile page?</string>
+    <string name="welcome">Welcome!</string>
+    <string name="verify">Verify your profile page</string>
+    <string name="message">What and Who is Next to You:\n Find meetings and people locally!</string>
+
+    <string name="niceone">Nice One!</string>
     <string name="link">facebook.com/</string>
+    <string name="nearby_user_message">Have you ever wondered who is\n sitting next to you?</string>
+    <string name="add_event_message">No matter what are you doing...\nJust post and have people join you!</string>
+
+
 
 </resources>
+
+    <!--    <string name="message1">No matter what are you doing\nJust post and have people join you!</string>-->
+    <!--    <string name="message2">No more wondering\nContact people sitting next to you!</string>-->

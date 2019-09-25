@@ -69,7 +69,7 @@
                         android:textColor="#fff"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:text="@string/amazing_event"/>
+                        android:text="@string/amazing_meeting"/>
 
                     <TextView
                         android:id="@+id/aa_date"
