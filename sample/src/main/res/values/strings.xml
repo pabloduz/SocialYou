@@ -30,7 +30,7 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on Events near you\n\nEven better create\n\nYours!\n\n</string>
+    <string name="no_event">Swipe on Events near you\n\nOr even better create\n\nYours!\n\n</string>
     <string name="location">Location</string>
     <string name="event_description">Eventzy Description</string>
     <string name="amazing_meeting">Amazing Meeting</string>
@@ -44,8 +44,8 @@
 
     <string name="niceone">Nice One!</string>
     <string name="link">facebook.com/</string>
-    <string name="nearby_user_message">Have you ever wondered who is\n sitting next to you?</string>
-    <string name="add_event_message">No matter what are you doing...\nJust post and have people join you!</string>
+    <string name="nearby_user_message">Have you ever wondered who\'s sitting next to you?</string>
+    <string name="add_event_message">No matter what\'re you doing have people join you!</string>
 
 
 
