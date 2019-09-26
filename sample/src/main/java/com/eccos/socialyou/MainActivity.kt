@@ -595,6 +595,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun buyPremium() {
+        Log.e(tag, skuDetails.toString())
         billingManager!!.initiatePurchaseFlow(skuDetails)
     }
 
@@ -660,7 +661,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     companion object {
-        var openedApp: Boolean = true
         var freeUser: Boolean = true
         var skuDetails: SkuDetails? = null
     }

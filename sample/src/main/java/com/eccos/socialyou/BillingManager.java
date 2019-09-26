@@ -283,7 +283,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             @Override
             public void run() {
                 ArrayList<String> skuList = new ArrayList<>();
-                skuList.add("android.test.purchased");
+                skuList.add("socialyou");
 
                 final SkuDetailsParams skuDetailsParams = SkuDetailsParams.newBuilder()
                         .setSkusList(skuList).setType(SkuType.SUBS).build();
