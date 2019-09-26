@@ -126,11 +126,7 @@ class AuthActivity : AppCompatActivity() {
         val fb = myFirebaseRef!!.child("users").child(userId)
         fb.setValue(mInformation)
 
-        var intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("nameUrl", "$nameUrl")
-        intent.putExtra("url", url)
-
-        return intent
+        return Intent(this, MainActivity::class.java)
     }
 
     private fun stripAccents(s: String): String {

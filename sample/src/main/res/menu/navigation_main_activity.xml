@@ -21,4 +21,9 @@
         android:id="@+id/nearby_users"
         android:title="@string/nearby_user"
         />
+
+    <item
+        android:id="@+id/buy_premium"
+        android:title="@string/buy_premium"
+        />
 </menu>

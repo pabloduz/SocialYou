@@ -3,6 +3,7 @@ package com.eccos.socialyou
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -30,6 +31,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import com.android.billingclient.api.SkuDetails
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.navigation.NavigationView
@@ -49,10 +51,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.Normalizer
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
 
+    private var billingManager: BillingManager? = null
     private val drawerLayout by lazy { findViewById<DrawerLayout>(R.id.drawer_layout) }
     private val cardStackView by lazy { findViewById<CardStackView>(R.id.card_stack_view) }
     private val manager by lazy { CardStackLayoutManager(this, this) }
@@ -61,6 +65,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val persistActivity = 10
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
+
+    private var example = "-LpcZ9nUG6ecI5RkyTpQ"
+    private var context: Context? = null
 
 
 
@@ -74,6 +81,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context= this
+
+        billingManager= BillingManager(this@MainActivity)
 
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
@@ -86,11 +96,62 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         showExampleSpot()
     }
 
+
     private fun showExampleSpot() {
-        try {
-            //Get the DataSnapshot key
+        if(!spotsSwiped.contains(example)) {
+            createProgressBar()
+
+            try {
+                //Get the DataSnapshot key
+                val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+                val ref = myFirebaseRef.child("events").child(example)
+
+                ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                    override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
+
+                        val data = dataSnapshot.value as Map<*, *>
+
+                        val title = data["title"] as String
+                        val date = data["date"] as String
+                        val time = data["time"] as String
+                        val location = data["location"] as String
+                        val description = data["description"] as String
+
+
+                        var storageRef = FirebaseStorage.getInstance().reference
+
+
+                        storageRef.child(example).downloadUrl.addOnSuccessListener {
+                            // Got the download URL
+                            var url = it.toString()
+
+                            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+                            progressBar.visibility = View.GONE
+
+                            addLast(1, example, title, date, time, location, description, url)
+
+                        }.addOnFailureListener {
+                            // Handle any errors
+                        }
+                    }
+
+                    override fun onCancelled(firebaseError: FirebaseError) {}
+                })
+
+            } catch (ex: Exception) {
+
+                Log.e(tag, "FireBase exception: " + ex.message)
+            }
+        }
+    }
+
+    private fun showPopup() {
+        if(!spotsSwiped.contains(example)) {
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
             val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
-            val ref = myFirebaseRef.child("events").child("-LpcZ9nUG6ecI5RkyTpQ")
+            val ref = myFirebaseRef.child("users").child(userId)
 
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -98,104 +159,58 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
                     val data = dataSnapshot.value as Map<*, *>
 
-                    val title = data["title"] as String
-                    val date = data["date"] as String
-                    val time = data["time"] as String
-                    val location = data["location"] as String
-                    val description = data["description"] as String
+                    val name = data["name"] as String
+                    val url = data["url"] as String
 
+                    var myDialog = Dialog(context!!)
+                    myDialog.setContentView(R.layout.custom_popup)
 
-                    var storageRef = FirebaseStorage.getInstance().reference
+                    var vProfile= myDialog.findViewById<TextView>(R.id.profile)
+                    var vImage= myDialog.findViewById<ImageView>(R.id.image)
 
+                    //Converting to a standardized string
+                    var nameUrl= name!!.replace(" ", "").toLowerCase()
+                    nameUrl= stripAccents(nameUrl)
+                    
+                    vProfile.text = nameUrl
 
-                    storageRef.child("-LpcZ9nUG6ecI5RkyTpQ").downloadUrl.addOnSuccessListener {
-                        // Got the download URL
-                        var url = it.toString()
+                    val requestOptions = RequestOptions().circleCrop().placeholder(R.drawable.circle)
 
-                        addLast(1, "-LpcZ9nUG6ecI5RkyTpQ", title, date, time, location, description, url)
+                    Glide.with(context!!).load(url).apply(requestOptions).into(vImage)
 
-                    }.addOnFailureListener {
-                        // Handle any errors
+                    var btnNext =  myDialog.findViewById<Button>(R.id.next)
+                    btnNext.setOnClickListener {
+                        //Getting reference to Firebase
+                        var myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+
+                        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+                        var url = "fb.com/${vProfile.text}"
+
+                        myFirebaseRef!!.child("users").child(userId).child("profile").setValue(url)
+
+                        myDialog.dismiss()
                     }
+
+                    myDialog.setOnDismissListener {
+                        setWindow()}
+
+                    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    myDialog.setCancelable(false)
+                    myDialog.show()
+
                 }
 
                 override fun onCancelled(firebaseError: FirebaseError) {}
             })
-
-        } catch (ex: Exception) {
-
-            Log.e(tag, "FireBase exception: " + ex.message)
         }
     }
 
-    private fun showPopup() {
-        Log.e(tag, "Calling activity: $callingActivity")
-
-        if(callingActivity != null){
-            Log.e(tag, callingActivity.shortClassName)
-
-            if(callingActivity.shortClassName == ".AuthActivity"){
-                var myDialog = Dialog(this)
-                myDialog.setContentView(R.layout.custom_popup)
-
-                val nameUrl = intent.extras!!.getString("nameUrl")
-                val url = intent.extras!!.getString("url")
-
-                var vProfile= myDialog.findViewById<TextView>(R.id.profile)
-                var vImage= myDialog.findViewById<ImageView>(R.id.image)
-
-                vProfile.text = nameUrl
-
-                val requestOptions = RequestOptions().circleCrop().placeholder(R.drawable.circle)
-
-                Glide.with(this).load(url).apply(requestOptions).into(vImage)
-
-                var btnNext =  myDialog.findViewById<Button>(R.id.next)
-                btnNext.setOnClickListener {
-                    //Getting reference to Firebase
-                    var myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
-
-                    val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-                    var url = "fb.com/${vProfile.text}"
-
-                    myFirebaseRef!!.child("users").child(userId).child("profile").setValue(url)
-
-                    myDialog.dismiss()
-                }
-
-                myDialog.setOnDismissListener {
-                    setWindow()}
-
-                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                myDialog.setCancelable(false)
-                myDialog.show()
-            }
-        }
-    }
-
-    private fun showPopupWelcome() {
-        Log.e(tag, "Calling activity: $callingActivity")
-
-        if(callingActivity != null){
-            Log.e(tag, callingActivity.shortClassName)
-
-            if(callingActivity.shortClassName == ".AuthActivity"){
-                var myDialog = Dialog(this)
-                myDialog.setContentView(R.layout.custom_popup_welcome)
-
-                var layout =  myDialog.findViewById<LinearLayout>(R.id.layout)
-                layout.setOnClickListener {
-                    //Getting reference to Firebase
-                    myDialog.dismiss()
-                }
-                myDialog.setOnDismissListener {
-                    setWindow()}
-
-                window.setBackgroundDrawableResource(android.R.color.white)
-                myDialog.show()
-            }
-        }
+    private fun stripAccents(s: String): String {
+        var s = s
+        s = Normalizer.normalize(s, Normalizer.Form.NFD)
+        s = s.replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+        return s
     }
 
     private fun setWindow() {
@@ -440,9 +455,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             insertAttendee(key)
         }
 
-        //addSpotSwiped(key)
-
         showPopup()
+
+        //It must be after showPopup()
+        addSpotSwiped(key)
+
 
     }
 
@@ -471,7 +488,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         val json = Gson().toJson(spotsSwiped)
-        pref.edit().putString("spotsSwiped", json).commit()
+        pref.edit().putString("spotsSwiped", json).apply()
     }
 
     override fun onCardRewound() {
@@ -570,11 +587,17 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 R.id.my_events -> myEvents()
                 R.id.add_event -> addEvent()
                 R.id.nearby_users -> nerbyUsers()
+                R.id.buy_premium -> buyPremium()
             }
             drawerLayout.closeDrawers()
             true
         }
     }
+
+    private fun buyPremium() {
+        billingManager!!.initiatePurchaseFlow(skuDetails)
+    }
+
 
     private fun myEvents() {
         val myIntent = Intent(this@MainActivity, MyEvents::class.java)
@@ -635,5 +658,34 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private fun createSpots(): List<Spot> {
         return ArrayList()
     }
+
+    companion object {
+        var openedApp: Boolean = true
+        var freeUser: Boolean = true
+        var skuDetails: SkuDetails? = null
+    }
 }
 
+//private fun showPopupWelcome() {
+//    Log.e(tag, "Calling activity: $callingActivity")
+//
+//    if(callingActivity != null){
+//        Log.e(tag, callingActivity.shortClassName)
+//
+//        if(callingActivity.shortClassName == ".AuthActivity"){
+//            var myDialog = Dialog(this)
+//            myDialog.setContentView(R.layout.custom_popup_welcome)
+//
+//            var layout =  myDialog.findViewById<LinearLayout>(R.id.layout)
+//            layout.setOnClickListener {
+//                //Getting reference to Firebase
+//                myDialog.dismiss()
+//            }
+//            myDialog.setOnDismissListener {
+//                setWindow()}
+//
+//            window.setBackgroundDrawableResource(android.R.color.white)
+//            myDialog.show()
+//        }
+//    }
+//}
