@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 
 class CardStackAdapter(
         private var spots: List<Spot> = emptyList()) : RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
@@ -30,7 +30,14 @@ class CardStackAdapter(
                 .load(spot.url)
                 .into(holder.image)
         holder.itemView.setOnClickListener { v ->
-            Toast.makeText(v.context, spot.description, Toast.LENGTH_LONG).show()
+            var snackBar= Snackbar.make(v, spot.description, Snackbar.LENGTH_LONG)
+
+            val snackBarView = snackBar.view
+
+            val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+            textView.maxLines = 38
+
+            snackBar.show()
         }
     }
 

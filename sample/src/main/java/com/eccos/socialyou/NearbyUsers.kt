@@ -1,6 +1,5 @@
 package com.eccos.socialyou
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.util.Log
 
 import android.view.View
@@ -217,12 +215,12 @@ class NearbyUsers : AppCompatActivity() {
                 users!!.add(spot)
             }
 
-            var spotAdapter = UserAdapter(this, users)
+            var userAdapter = UserAdapter(this, users)
 
             var recyclerView = findViewById<RecyclerView>(R.id.rv)
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
-            recyclerView.adapter = spotAdapter
+            recyclerView.adapter = userAdapter
         }, 2000)
     }
 
@@ -332,7 +330,6 @@ class NearbyUsers : AppCompatActivity() {
     }
 
     companion object {
-        private var pref: SharedPreferences? = null
         private val tag = "NearbyUsers"
     }
 }

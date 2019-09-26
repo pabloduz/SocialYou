@@ -43,6 +43,10 @@
             android:name=".NearbyUsers"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".PresenceList"
+            android:screenOrientation="portrait">
+        </activity>
         <service android:name=".LocationService" />
     </application>
 

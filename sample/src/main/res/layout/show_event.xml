@@ -58,7 +58,7 @@
 
 
                     <TextView
-                        android:id="@+id/aa_title"
+                        android:id="@+id/aa_presence_list"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/darker_background"
@@ -69,7 +69,7 @@
                         android:textColor="#fff"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:text="@string/amazing_meeting"/>
+                        android:text="@string/presence_list"/>
 
                     <TextView
                         android:id="@+id/aa_date"

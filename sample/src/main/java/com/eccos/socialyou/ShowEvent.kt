@@ -1,5 +1,6 @@
 package com.eccos.socialyou
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -64,6 +65,10 @@ class ShowEvent : AppCompatActivity() {
         Glide.with(this).load(url).apply(requestOptions).into(vUrl)
 
 
+        val vPresenceList = findViewById<TextView>(R.id.aa_presence_list)
+
+
+
         mToolbar.setOnClickListener{
             val contextView = this@ShowEvent.findViewById<View>(android.R.id.content)
 
@@ -74,6 +79,13 @@ class ShowEvent : AppCompatActivity() {
             textView.maxLines = 5
 
             snackBar.show()
+        }
+
+
+        vPresenceList.setOnClickListener{
+            val myIntent = Intent(this@ShowEvent, PresenceList::class.java)
+            myIntent.putExtra("key", key)
+            startActivity(myIntent)
         }
 
 

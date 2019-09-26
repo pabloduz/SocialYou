@@ -33,7 +33,7 @@
     <string name="no_event">Swipe on Events near you\n\nOr even better create\n\nYours!\n</string>
     <string name="location">Location</string>
     <string name="meeting_description">Meeting Description</string>
-    <string name="amazing_meeting">Presence List</string>
+    <string name="presence_list">Presence List</string>
     <string name="no_user">No users nearby\n\nWalk around!\n\n\n</string>
     <string name="nearby_user">Nearby Users</string>
     <string name="next">Next</string>
