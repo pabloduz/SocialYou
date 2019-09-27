@@ -88,18 +88,20 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         Firebase.setAndroidContext(this)
         setupSpotsSwiped()
 
+        createLocationRequest()
+        startLocationUpdates()
+
         setContentView(R.layout.activity_main)
         setupNavigation()
         setupCardStackView()
         setupButton()
 
-        showExampleSpot()
+        //showExampleSpot()
     }
 
 
     private fun showExampleSpot() {
         if(!spotsSwiped.contains(example)) {
-            createProgressBar()
 
             try {
                 //Get the DataSnapshot key
@@ -126,9 +128,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                             // Got the download URL
                             var url = it.toString()
 
-                            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-                            progressBar.visibility = View.GONE
-
                             addLast(1, example, title, date, time, location, description, url)
 
                         }.addOnFailureListener {
@@ -147,63 +146,61 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     }
 
     private fun showPopup() {
-        if(!spotsSwiped.contains(example)) {
-            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-            val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
-            val ref = myFirebaseRef.child("users").child(userId)
+        val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+        val ref = myFirebaseRef.child("users").child(userId)
 
-            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
-                override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
+            override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
 
-                    val data = dataSnapshot.value as Map<*, *>
+                val data = dataSnapshot.value as Map<*, *>
 
-                    val name = data["name"] as String
-                    val url = data["url"] as String
+                val name = data["name"] as String
+                val url = data["url"] as String
 
-                    var myDialog = Dialog(context!!)
-                    myDialog.setContentView(R.layout.custom_popup)
+                var myDialog = Dialog(context!!)
+                myDialog.setContentView(R.layout.custom_popup)
 
-                    var vProfile= myDialog.findViewById<TextView>(R.id.profile)
-                    var vImage= myDialog.findViewById<ImageView>(R.id.image)
+                var vProfile= myDialog.findViewById<TextView>(R.id.profile)
+                var vImage= myDialog.findViewById<ImageView>(R.id.image)
 
-                    //Converting to a standardized string
-                    var nameUrl= name!!.replace(" ", "").toLowerCase()
-                    nameUrl= stripAccents(nameUrl)
-                    
-                    vProfile.text = nameUrl
+                //Converting to a standardized string
+                var nameUrl= name!!.replace(" ", "").toLowerCase()
+                nameUrl= stripAccents(nameUrl)
 
-                    val requestOptions = RequestOptions().circleCrop().placeholder(R.drawable.circle)
+                vProfile.text = nameUrl
 
-                    Glide.with(context!!).load(url).apply(requestOptions).into(vImage)
+                val requestOptions = RequestOptions().circleCrop().placeholder(R.drawable.circle)
 
-                    var btnNext =  myDialog.findViewById<Button>(R.id.next)
-                    btnNext.setOnClickListener {
-                        //Getting reference to Firebase
-                        var myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+                Glide.with(context!!).load(url).apply(requestOptions).into(vImage)
 
-                        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+                var btnNext =  myDialog.findViewById<Button>(R.id.next)
+                btnNext.setOnClickListener {
+                    //Getting reference to Firebase
+                    var myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
 
-                        var url = "fb.com/${vProfile.text}"
+                    val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-                        myFirebaseRef!!.child("users").child(userId).child("profile").setValue(url)
+                    var url = "fb.com/${vProfile.text}"
 
-                        myDialog.dismiss()
-                    }
+                    myFirebaseRef!!.child("users").child(userId).child("profile").setValue(url)
 
-                    myDialog.setOnDismissListener {
-                        setWindow()}
-
-                    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    myDialog.setCancelable(false)
-                    myDialog.show()
-
+                    myDialog.dismiss()
                 }
 
-                override fun onCancelled(firebaseError: FirebaseError) {}
-            })
-        }
+                myDialog.setOnDismissListener {
+                    setWindow()}
+
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                myDialog.setCancelable(false)
+                myDialog.show()
+
+            }
+
+            override fun onCancelled(firebaseError: FirebaseError) {}
+        })
     }
 
     private fun stripAccents(s: String): String {
@@ -415,9 +412,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     override fun onResume() {
         super.onResume()
 
-        createLocationRequest()
-        startLocationUpdates()
-
         setWindow()
     }
 
@@ -455,7 +449,9 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             insertAttendee(key)
         }
 
-        showPopup()
+        if(key.equals(example)){
+            showPopup()
+        }
 
         //It must be after showPopup()
         addSpotSwiped(key)
