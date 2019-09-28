@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private val tag = "MainActivity"
     private var firstSpot: Boolean = true
 
-    private var example = "-LpcZ9nUG6ecI5RkyTpQ"
+    private var example = "-LppDrl8DJ4WExCREfWV"
     private var context: Context? = null
 
 
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         setupCardStackView()
         setupButton()
 
-        //showExampleSpot()
+        showExampleSpot()
     }
 
 

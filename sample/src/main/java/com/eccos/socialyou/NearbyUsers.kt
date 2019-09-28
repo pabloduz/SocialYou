@@ -3,7 +3,6 @@ package com.eccos.socialyou
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -118,12 +117,14 @@ class NearbyUsers : AppCompatActivity() {
 
         val geoFire = GeoFire(ref)
 
-        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 0.05)
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(myLocation.latitude, myLocation.longitude), 0.075)
 
         geoQuery.addGeoQueryDataEventListener(object : GeoQueryDataEventListener {
 
             override fun onDataEntered(dataSnapshot: com.google.firebase.database.DataSnapshot, location: GeoLocation) {
-                showSpots()
+                val key = dataSnapshot.key
+
+                showSpots(key)
             }
 
 
@@ -155,21 +156,20 @@ class NearbyUsers : AppCompatActivity() {
 
 
 
-    fun showSpots() {
+    fun showSpots(key: String?) {
         try {
             //Get the DataSnapshot key
             val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
 
-            val userId = FirebaseAuth.getInstance().currentUser!!.uid
-
-            val ref = myFirebaseRef.child("users").child(userId)
+            val ref = myFirebaseRef.child("users").child(key)
 
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-
                     val key = dataSnapshot.key
+
+                    Log.e(tag, key)
 
                     Log.e(tag, "Create card view for")
 
