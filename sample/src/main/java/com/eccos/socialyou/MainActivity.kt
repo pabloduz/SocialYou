@@ -70,8 +70,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var example = "-LppDrl8DJ4WExCREfWV"
     private var context: Context? = null
 
-
-
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationCallback: LocationCallback? = null
     private var locationRequest: LocationRequest? = null
@@ -680,9 +678,16 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         return ArrayList()
     }
 
+
+    init {
+        instance = this
+    }
+
+
     companion object {
         var freeUser: Boolean = true
         var skuDetails: SkuDetails? = null
+        lateinit var instance: MainActivity
     }
 }
 

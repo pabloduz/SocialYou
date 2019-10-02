@@ -15,11 +15,11 @@ import com.firebase.client.Firebase
 import com.firebase.client.FirebaseError
 import com.firebase.client.ValueEventListener
 import com.google.android.material.snackbar.Snackbar
-import java.util.ArrayList
 
 class PresenceList : AppCompatActivity() {
 
     var users: ArrayList<User>? = null
+    var spotCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +53,8 @@ class PresenceList : AppCompatActivity() {
                     val refEvent = myFirebaseRef.child("users").child(key)
                     refEvent.addListenerForSingleValueEvent(object : ValueEventListener {
 
-
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val key = dataSnapshot.key
-
-                            Log.e(tag, "Create card view for")
 
                             val data = dataSnapshot.value as Map<*, *>
 
@@ -65,9 +62,22 @@ class PresenceList : AppCompatActivity() {
                             val profile = data["profile"] as String
                             val url = data["url"] as String
 
-                            val spot = User(key, name, profile, url)
+                            var spot = User(key, name, profile, url)
 
-                            users!!.add(spot)
+                            if(MainActivity.freeUser){
+
+                                if(spotCount < 3){
+                                    users!!.add(spot)
+
+                                }else{
+                                    spot = User(key, resources.getString(R.string.unlock), resources.getString(R.string.find_out), url)
+                                    users!!.add(spot)
+                                }
+                                spotCount++
+
+                            }else{
+                                users!!.add(spot)
+                            }
 
                             Log.e(tag, "User added")
                         }
@@ -90,7 +100,7 @@ class PresenceList : AppCompatActivity() {
             progressBar.visibility = View.GONE
 
             //Do something after X ms
-            var userAdapter = UserAdapter(this, users)
+            var userAdapter = UserAdapter(this, users!!)
 
             var recyclerView = findViewById<RecyclerView>(R.id.rv)
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
@@ -114,13 +124,6 @@ class PresenceList : AppCompatActivity() {
         setWindow()
     }
 
-
-    private fun showSnackbar(text: Int) {
-        val contextView = findViewById<View>(android.R.id.content)
-
-        Snackbar.make(contextView, text, Snackbar.LENGTH_LONG)
-                .show()
-    }
 
     companion object {
         private var pref: SharedPreferences? = null

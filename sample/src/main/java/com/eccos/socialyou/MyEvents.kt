@@ -124,7 +124,7 @@ class MyEvents : AppCompatActivity() {
                 spots!!.add(spot)
             }
 
-            var spotAdapter = SpotAdapter(this, spots)
+            var spotAdapter = SpotAdapter(this, spots!!)
 
             var recyclerView = findViewById<RecyclerView>(R.id.rv)
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)

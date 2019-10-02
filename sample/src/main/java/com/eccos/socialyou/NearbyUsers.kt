@@ -37,8 +37,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 
-import java.util.ArrayList
-
 class NearbyUsers : AppCompatActivity() {
 
     private var billingManager: BillingManager? = null
@@ -219,7 +217,7 @@ class NearbyUsers : AppCompatActivity() {
                 users!!.add(spot)
             }
 
-            var userAdapter = UserAdapter(this, users)
+            var userAdapter = UserAdapter(this, users!!)
 
             var recyclerView = findViewById<RecyclerView>(R.id.rv)
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)

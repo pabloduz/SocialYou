@@ -46,9 +46,12 @@
     <string name="link">facebook.com/</string>
     <string name="nearby_user_message">Have you ever wondered who\'s sitting next to you?</string>
     <string name="add_event_message">No matter what\'re you doing have people join you!</string>
-    <string name="unlimited_access">Unlimited Access</string>
     <string name="rate">Rate App</string>
     <string name="share">Share App</string>
+    <string name="unlock">Unlock</string>
+    <string name="unlimited_access">Unlimited Access</string>
+    <string name="get_unlimited_access">Get Unlimited Access</string>
+    <string name="find_out">fb.com/?</string>
 
 
 </resources>
