@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -584,9 +585,31 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                 R.id.add_event -> addEvent()
                 R.id.nearby_users -> nerbyUsers()
                 R.id.buy_premium -> buyPremium()
+                R.id.rate -> rate()
+                R.id.share -> share()
             }
             drawerLayout.closeDrawers()
             true
+        }
+    }
+
+    private fun share() {
+        val appPackageName = packageName // package name of the app
+
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        val shareBody = "A lot of savings in you way!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SocialYou")
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+        startActivity(Intent.createChooser(sharingIntent, "Share via"))    }
+
+    private fun rate() {
+        val appPackageName = packageName // getPackageName() from Context or Activity object
+
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
+        } catch (ex: android.content.ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
         }
     }
 
@@ -611,6 +634,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
         val myIntent = Intent(this@MainActivity, NearbyUsers::class.java)
         startActivityForResult(myIntent, persistActivity)
     }
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

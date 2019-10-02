@@ -9,7 +9,7 @@ android {
         applicationId "com.eccos.socialyou"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 5
+        versionCode 6
         versionName "1.0"
         multiDexEnabled true
     }

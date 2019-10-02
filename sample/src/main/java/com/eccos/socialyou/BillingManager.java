@@ -271,8 +271,8 @@ public class BillingManager implements PurchasesUpdatedListener {
     public void grantEntitlement(){
         MainActivity.Companion.setFreeUser(false);
 
-        Intent gameScreen = new Intent(getContext(), MainActivity.class);
-        getContext().startActivity(gameScreen);
+        Intent mainScreen = new Intent(getContext(), MainActivity.class);
+        getContext().startActivity(mainScreen);
 
     }
 
@@ -283,7 +283,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             @Override
             public void run() {
                 ArrayList<String> skuList = new ArrayList<>();
-                skuList.add("android.test.purchased");
+                skuList.add("socialyou");
 
                 final SkuDetailsParams skuDetailsParams = SkuDetailsParams.newBuilder()
                         .setSkusList(skuList).setType(SkuType.SUBS).build();

@@ -30,11 +30,11 @@
     <string name="time">Time</string>
     <string name="grant_location">SocialYou requires location permission.</string>
     <string name="grant_storage">Grant permission to select image.</string>
-    <string name="no_event">Swipe on events near you\n\nOr even better create\n\nYours!\n</string>
+    <string name="no_event">Swipe on events near you\nor even better create\nyours!\n\n\n\n</string>
     <string name="location">Location</string>
     <string name="meeting_description">Meeting Description</string>
     <string name="presence_list">Presence List</string>
-    <string name="no_user">No users nearby\n\nWalk around!\n\n\n</string>
+    <string name="no_user">No users nearby\nWalk around!\n\n\n\n</string>
     <string name="nearby_user">Nearby Users</string>
     <string name="next">Next</string>
     <string name="fb_profile">username</string>
@@ -47,6 +47,8 @@
     <string name="nearby_user_message">Have you ever wondered who\'s sitting next to you?</string>
     <string name="add_event_message">No matter what\'re you doing have people join you!</string>
     <string name="buy_premium">Buy Premium</string>
+    <string name="rate">Rate</string>
+    <string name="share">Share</string>
 
 
 </resources>
