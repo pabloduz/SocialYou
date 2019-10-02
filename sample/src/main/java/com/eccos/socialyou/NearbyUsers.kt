@@ -41,6 +41,7 @@ import java.util.ArrayList
 
 class NearbyUsers : AppCompatActivity() {
 
+    private var billingManager: BillingManager? = null
     private val persistActivity = 10
     var users: ArrayList<User>? = null
     private val myLocationPermissionRequest = 101
@@ -53,6 +54,8 @@ class NearbyUsers : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.nearby_users)
+
+        billingManager= BillingManager(this@NearbyUsers)
 
         Firebase.setAndroidContext(this)
 
@@ -252,6 +255,7 @@ class NearbyUsers : AppCompatActivity() {
                 R.id.home_page -> home()
                 R.id.my_events -> myEvents()
                 R.id.add_event -> addEvent()
+                R.id.buy_premium -> buyPremium()
                 R.id.rate -> rate()
                 R.id.share -> share()
             }
@@ -265,7 +269,7 @@ class NearbyUsers : AppCompatActivity() {
 
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        val shareBody = "A lot of savings in you way!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
+        val shareBody = "Being Social Made Easy!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SocialYou")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
         startActivity(Intent.createChooser(sharingIntent, "Share via"))    }
@@ -279,6 +283,12 @@ class NearbyUsers : AppCompatActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
         }
     }
+
+    private fun buyPremium() {
+        Log.e(tag, MainActivity.skuDetails.toString())
+        billingManager!!.initiatePurchaseFlow(MainActivity.skuDetails)
+    }
+
 
     private fun home() {
         val myIntent = Intent(this@NearbyUsers, MainActivity::class.java)

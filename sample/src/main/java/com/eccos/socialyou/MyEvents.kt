@@ -34,6 +34,7 @@ import java.util.ArrayList
 
 class MyEvents : AppCompatActivity() {
 
+    private var billingManager: BillingManager? = null
     private val persistActivity: Int = 101
     var spots: ArrayList<Spot>? = null
 
@@ -41,6 +42,10 @@ class MyEvents : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.my_events)
+
+        billingManager= BillingManager(this@MyEvents)
+
+        Firebase.setAndroidContext(this)
 
         setupNavigation()
 
@@ -155,6 +160,7 @@ class MyEvents : AppCompatActivity() {
                 R.id.home_page -> home()
                 R.id.add_event -> addEvent()
                 R.id.nearby_users -> nearbyUsers()
+                R.id.buy_premium -> buyPremium()
                 R.id.rate -> rate()
                 R.id.share -> share()
             }
@@ -168,7 +174,7 @@ class MyEvents : AppCompatActivity() {
 
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        val shareBody = "A lot of savings in you way!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
+        val shareBody = "Being Social Made Easy!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SocialYou")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
         startActivity(Intent.createChooser(sharingIntent, "Share via"))    }
@@ -182,6 +188,12 @@ class MyEvents : AppCompatActivity() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")))
         }
     }
+
+    private fun buyPremium() {
+        Log.e(tag, MainActivity.skuDetails.toString())
+        billingManager!!.initiatePurchaseFlow(MainActivity.skuDetails)
+    }
+
 
     private fun home() {
         val myIntent = Intent(this@MyEvents, MainActivity::class.java)

@@ -598,7 +598,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        val shareBody = "A lot of savings in you way!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
+        val shareBody = "Being Social Made Easy!\nI recommend you this app so you will find what and who is next to you:\n\nhttps://play.google.com/store/apps/details?id=$appPackageName"
         sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SocialYou")
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
         startActivity(Intent.createChooser(sharingIntent, "Share via"))    }
