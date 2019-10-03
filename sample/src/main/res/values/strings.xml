@@ -34,7 +34,7 @@
     <string name="location">Location</string>
     <string name="meeting_description">Meeting Description</string>
     <string name="presence_list">Presence List</string>
-    <string name="no_user">No users nearby\nWalk around!\n\n\n\n</string>
+    <string name="no_user">There is no users nearby\n\nWalk around!\n\n\n\n</string>
     <string name="nearby_user">Nearby People</string>
     <string name="next">Next</string>
     <string name="fb_profile">username</string>

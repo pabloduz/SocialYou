@@ -7,5 +7,14 @@
             never <!-- default, shortEdges, never -->
         </item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
+
+    <style name="AppThemeAuth" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+    </style>
+
 </resources>

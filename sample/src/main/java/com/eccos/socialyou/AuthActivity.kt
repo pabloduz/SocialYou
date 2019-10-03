@@ -44,9 +44,9 @@ class AuthActivity : AppCompatActivity() {
                                     AuthUI.IdpConfig.FacebookBuilder().build(),
                                     AuthUI.IdpConfig.EmailBuilder().build(),
                                     AuthUI.IdpConfig.GoogleBuilder().build()))
-                            .setTheme(R.style.AppTheme)
+                            .setTheme(R.style.AppThemeAuth)
                             .setIsSmartLockEnabled(false)
-                            .setLogo(R.mipmap.ic_launcher).build(),
+                            .setLogo(R.drawable.logo).build(),
                     RC_SIGN_IN)
         }
     }
