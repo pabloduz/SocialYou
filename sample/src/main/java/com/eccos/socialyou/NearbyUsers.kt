@@ -57,14 +57,14 @@ class NearbyUsers : AppCompatActivity() {
 
         Firebase.setAndroidContext(this)
 
-        createLocationRequest()
-        startLocationUpdates()
-
         setupNavigation()
 
         users = ArrayList()
 
         showSnackbar(R.string.nearby_user_message)
+
+        createLocationRequest()
+        startLocationUpdates()
     }
 
     private fun createLocationRequest() {
@@ -144,15 +144,13 @@ class NearbyUsers : AppCompatActivity() {
             }
 
             override fun onGeoQueryReady() {
-                // ...
+                setupAdapter()
             }
 
             override fun onGeoQueryError(error: DatabaseError) {
                 Log.e(tag, "$error")
             }
         })
-
-        setupAdapter()
     }
 
 
@@ -201,8 +199,6 @@ class NearbyUsers : AppCompatActivity() {
     }
 
 
-
-
     private fun setupAdapter() {
         val handler = Handler()
         handler.postDelayed({
@@ -223,7 +219,7 @@ class NearbyUsers : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = userAdapter
-        }, 2000)
+        }, 1250)
     }
 
     private fun setWindow() {

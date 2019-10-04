@@ -53,6 +53,10 @@ class MyEvents : AppCompatActivity() {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        showEvents()
+    }
+
+    private fun showEvents(){
         val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
 
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -130,7 +134,7 @@ class MyEvents : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(applicationContext)
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = spotAdapter
-        }, 1250)
+        }, 1500)
     }
 
     private fun setWindow() {

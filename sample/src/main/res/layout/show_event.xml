@@ -26,6 +26,20 @@
             app:titleEnabled="false"
             app:title="Event Title">
 
+            <TextView
+                android:id="@+id/txtclose"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:textColor="@color/white"
+                android:text="X"
+                android:textStyle="bold"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:background="@drawable/cerclebackground"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp" />
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 app:title="Event Title"
