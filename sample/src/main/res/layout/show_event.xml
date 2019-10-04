@@ -28,17 +28,17 @@
 
             <TextView
                 android:id="@+id/txtclose"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
                 android:text="X"
+                android:textSize="27sp"
                 android:textStyle="bold"
                 android:layout_gravity="end"
-                android:gravity="center"
-                android:background="@drawable/cerclebackground"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp" />
+                android:background="@drawable/circlebackground"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="47dp"
+                android:layout_marginRight="47dp" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -67,7 +67,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:orientation="vertical">
 
 

@@ -22,8 +22,8 @@ class ShowEvent : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.show_event)
 
-        var mToolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(mToolbar)
+        var toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         // Recieve data
         val key = intent.extras!!.getString("key")
@@ -67,12 +67,28 @@ class ShowEvent : AppCompatActivity() {
 
         val vPresenceList = findViewById<TextView>(R.id.aa_presence_list)
 
+        vPresenceList.setOnClickListener{
+            val myIntent = Intent(this@ShowEvent, PresenceList::class.java)
+            myIntent.putExtra("key", key)
+            startActivity(myIntent)
+        }
+
+        val vClose = findViewById<TextView>(R.id.txtclose)
+
+        vClose.setOnClickListener{
+            val contextView = findViewById<View>(android.R.id.content)
+
+            Snackbar.make(contextView, R.string.confirm, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.ok) {
 
 
-        mToolbar.setOnClickListener{
+                    }.show()
+        }
+
+        vLocation.setOnClickListener{
             val contextView = this@ShowEvent.findViewById<View>(android.R.id.content)
 
-            val snackBar= Snackbar.make(contextView, title, Snackbar.LENGTH_LONG)
+            val snackBar= Snackbar.make(contextView, location, Snackbar.LENGTH_LONG)
             val snackBarView = snackBar.view
 
             val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
@@ -81,18 +97,10 @@ class ShowEvent : AppCompatActivity() {
             snackBar.show()
         }
 
-
-        vPresenceList.setOnClickListener{
-            val myIntent = Intent(this@ShowEvent, PresenceList::class.java)
-            myIntent.putExtra("key", key)
-            startActivity(myIntent)
-        }
-
-
-        vLocation.setOnClickListener{
+        toolbar.setOnClickListener{
             val contextView = this@ShowEvent.findViewById<View>(android.R.id.content)
 
-            val snackBar= Snackbar.make(contextView, location, Snackbar.LENGTH_LONG)
+            val snackBar= Snackbar.make(contextView, title, Snackbar.LENGTH_LONG)
             val snackBarView = snackBar.view
 
             val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
