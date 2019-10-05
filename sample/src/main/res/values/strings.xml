@@ -42,7 +42,7 @@
     <string name="verify">Verify your profile page</string>
     <string name="message">What and Who is Next to You:\n Find meetings and people locally!</string>
 
-    <string name="niceone">Nice One!</string>
+    <string name="nice_one">Nice One!</string>
     <string name="link">facebook.com/</string>
     <string name="nearby_user_message">Have you ever wondered who\'s sitting next to you?</string>
     <string name="add_event_message">No matter what\'re you doing have people join you!</string>
@@ -52,9 +52,9 @@
     <string name="unlimited_access">Unlimited Access</string>
     <string name="get_unlimited_access">Get Unlimited Access</string>
     <string name="find_out">fb.com/?</string>
-    <string name="confirm">You\'ll be removed from the presence list</string>
+    <string name="confirm">You\'ll be removed from this meeting</string>
     <string name="ok">ok</string>
-    <string name="who_is_coming">See who is coming</string>
+    <string name="who_is_attending">Who is attending</string>
 
 
 </resources>

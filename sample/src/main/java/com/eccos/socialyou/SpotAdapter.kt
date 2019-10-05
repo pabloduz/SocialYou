@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.snackbar.Snackbar
 
 
 class SpotAdapter(private var mContext: Context, private var mData: List<Spot>) : RecyclerView.Adapter<SpotAdapter.ViewHolder>() {
@@ -51,6 +52,17 @@ class SpotAdapter(private var mContext: Context, private var mData: List<Spot>) 
 
             mContext.startActivity(i)
         }
+
+        view.setOnLongClickListener{
+//            Toast.makeText(mContext, "Long click detected", Toast.LENGTH_SHORT).show()
+            Snackbar.make(view, R.string.confirm, Snackbar.LENGTH_LONG).setAction(R.string.ok) {
+
+
+            }.show()
+
+            true
+        }
+
         return viewHolder
     }
 

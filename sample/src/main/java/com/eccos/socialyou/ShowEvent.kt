@@ -73,18 +73,6 @@ class ShowEvent : AppCompatActivity() {
             startActivity(myIntent)
         }
 
-        val vClose = findViewById<TextView>(R.id.txtclose)
-
-        vClose.setOnClickListener{
-            val contextView = findViewById<View>(android.R.id.content)
-
-            Snackbar.make(contextView, R.string.confirm, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.ok) {
-
-
-                    }.show()
-        }
-
         vLocation.setOnClickListener{
             val contextView = this@ShowEvent.findViewById<View>(android.R.id.content)
 

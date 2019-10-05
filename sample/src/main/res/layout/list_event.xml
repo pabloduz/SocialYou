@@ -6,22 +6,21 @@
     android:padding="5dp"
     android:layout_marginTop="5dp"
     android:background="@drawable/bgg"
-    android:id="@+id/container">
-
+    android:id="@+id/container"
+    android:longClickable="true">
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:background="@drawable/loading_shape"
-        android:id="@+id/thumbnail"/>
+        android:id="@+id/thumbnail" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp">
-
 
         <TextView
             android:textColor="#fff"
@@ -49,7 +48,6 @@
             android:drawableLeft="@drawable/ic_date_range_black_24dp"
             android:id="@+id/date"/>
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,3 +60,4 @@
             android:drawableLeft="@drawable/ic_access_time_black_24dp"/>
     </LinearLayout>
 </LinearLayout>
+

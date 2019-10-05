@@ -26,20 +26,6 @@
             app:titleEnabled="false"
             app:title="Event Title">
 
-            <TextView
-                android:id="@+id/txtclose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/red"
-                android:text="X"
-                android:textSize="27sp"
-                android:textStyle="bold"
-                android:layout_gravity="end"
-                android:background="@drawable/circlebackground"
-                android:layout_marginTop="35dp"
-                android:layout_marginEnd="47dp"
-                android:layout_marginRight="47dp" />
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 app:title="Event Title"
@@ -56,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="40dp">
-
 
                 <ImageView
                     android:id="@+id/aa_thumbnail"
