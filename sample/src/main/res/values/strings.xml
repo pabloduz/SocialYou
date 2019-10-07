@@ -21,8 +21,8 @@
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="description">Description</string>
-    <string name="slogan">Share moments,</string>
-    <string name="slogan2">Meet local people.</string>
+    <string name="slogan">Share Locally,</string>
+    <string name="slogan2">Find People.</string>
     <string name="send">Send</string>
     <string name="image">Click to Select Image</string>
     <string name="select_image">Select an image first.</string>
@@ -44,8 +44,8 @@
 
     <string name="nice_one">Nice One!</string>
     <string name="link">facebook.com/</string>
-    <string name="nearby_user_message">Have you ever wondered who\'s sitting next to you?</string>
-    <string name="add_event_message">No matter what\'re you doing have people join you!</string>
+    <string name="nearby_user_message">Ever wondered who is sitting next to you?</string>
+    <string name="add_event_message">Have close people join what you will doing</string>
     <string name="rate">Rate App</string>
     <string name="share">Share App</string>
     <string name="unlock">Unlock</string>
@@ -54,7 +54,8 @@
     <string name="find_out">fb.com/?</string>
     <string name="confirm">You\'ll be removed from this meeting</string>
     <string name="ok">ok</string>
-    <string name="who_is_attending">Who is attending</string>
+    <string name="who_is_attending">Who is Attending</string>
+    <string name="long_click">Long tap to remove meeting</string>
 
 
 </resources>

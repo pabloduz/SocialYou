@@ -13,11 +13,17 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.firebase.client.Firebase
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import android.app.Activity
+
+
 
 
 class SpotAdapter(private var mContext: Context, private var mData: List<Spot>) : RecyclerView.Adapter<SpotAdapter.ViewHolder>() {
@@ -56,7 +62,21 @@ class SpotAdapter(private var mContext: Context, private var mData: List<Spot>) 
         view.setOnLongClickListener{
 //            Toast.makeText(mContext, "Long click detected", Toast.LENGTH_SHORT).show()
             Snackbar.make(view, R.string.confirm, Snackbar.LENGTH_LONG).setAction(R.string.ok) {
+                //Remove meeting for the user
 
+                val key= mData[viewHolder.adapterPosition].key
+
+                val userId = FirebaseAuth.getInstance().currentUser!!.uid
+
+                //Get the DataSnapshot key
+                val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
+
+                myFirebaseRef.child("attendees").child(key).child(userId).removeValue()
+                myFirebaseRef.child("users").child(userId).child("events").child(key).removeValue()
+
+                val myIntent = Intent(mContext, MyEvents::class.java)
+                mContext.startActivity(myIntent)
+                (mContext as Activity).finish()
 
             }.show()
 
@@ -65,7 +85,6 @@ class SpotAdapter(private var mContext: Context, private var mData: List<Spot>) 
 
         return viewHolder
     }
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (_, _, title, date, time, _, _, url) = mData[position]

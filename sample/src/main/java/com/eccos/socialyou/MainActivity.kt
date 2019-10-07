@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -13,6 +12,7 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.Gravity
@@ -21,8 +21,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -68,6 +66,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var firstSpot: Boolean = true
 
     private var example = "-LppDrl8DJ4WExCREfWV"
+    private var example1 = "-Lqb8PMpdlU-sCJBowxp"
     private var context: Context? = null
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -100,12 +99,48 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
 
     private fun showExampleSpot() {
-        if(!spotsSwiped.contains(example)) {
+        val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
 
-            try {
+        if(!spotsSwiped.contains(example)) {
+            //Get the DataSnapshot key
+            val ref = myFirebaseRef.child("events").child(example)
+
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(dataSnapshot: com.firebase.client.DataSnapshot) {
+
+                    val data = dataSnapshot.value as Map<*, *>
+
+                    val title = data["title"] as String
+                    val date = data["date"] as String
+                    val time = data["time"] as String
+                    val location = data["location"] as String
+                    val description = data["description"] as String
+
+
+                    var storageRef = FirebaseStorage.getInstance().reference
+
+
+                    storageRef.child(example).downloadUrl.addOnSuccessListener {
+                        // Got the download URL
+                        var url = it.toString()
+
+                        addLast(1, example, title, date, time, location, description, url)
+
+                    }.addOnFailureListener {
+                        // Handle any errors
+                    }
+                }
+
+                override fun onCancelled(firebaseError: FirebaseError) {}
+            })
+        }
+
+        val handler = Handler()
+        handler.postDelayed({
+            if(!spotsSwiped.contains(example1)) {
                 //Get the DataSnapshot key
-                val myFirebaseRef = Firebase("https://socialyou-be6cf.firebaseio.com/")
-                val ref = myFirebaseRef.child("events").child(example)
+                val ref = myFirebaseRef.child("events").child(example1)
 
                 ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -123,11 +158,11 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         var storageRef = FirebaseStorage.getInstance().reference
 
 
-                        storageRef.child(example).downloadUrl.addOnSuccessListener {
+                        storageRef.child(example1).downloadUrl.addOnSuccessListener {
                             // Got the download URL
                             var url = it.toString()
 
-                            addLast(1, example, title, date, time, location, description, url)
+                            addLast(1, example1, title, date, time, location, description, url)
 
                         }.addOnFailureListener {
                             // Handle any errors
@@ -136,12 +171,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
                     override fun onCancelled(firebaseError: FirebaseError) {}
                 })
-
-            } catch (ex: Exception) {
-
-                Log.e(tag, "FireBase exception: " + ex.message)
             }
-        }
+        }, 2000)
     }
 
     private fun showPopup() {
@@ -443,12 +474,12 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         var stringDirection= direction.toString()
 
-        if(stringDirection.equals("Right")){
+        if(stringDirection == "Right"){
 
             insertAttendee(key)
         }
 
-        if(key.equals(example)){
+        if(key == example1){
             showPopup()
         }
 
@@ -468,6 +499,7 @@ class MainActivity : AppCompatActivity(), CardStackListener {
             myFirebaseRef.child("attendees").child(key!!).child(userId).setValue(true)
             myFirebaseRef!!.child("users").child(userId).child("events").child(key).setValue(true)
 
+
         } catch (ex: Exception) {
 
             Log.e(tag, "FireBase exception: " + ex.message)
@@ -477,8 +509,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
     private fun addSpotSwiped(key: String) {
         Log.d("CardStackView", "onCardSwiped: key = $key")
-        spotsSwiped.remove("null")
         spotsSwiped.add(key)
+        spotsSwiped.remove("null")
 
         var pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 

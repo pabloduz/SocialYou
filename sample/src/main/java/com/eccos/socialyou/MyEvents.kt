@@ -55,6 +55,11 @@ class MyEvents : AppCompatActivity() {
 
         pref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        val contextView = findViewById<View>(android.R.id.content)
+
+        Snackbar.make(contextView, resources.getString(R.string.long_click), Snackbar.LENGTH_LONG)
+                .show()
+
         showEvents()
     }
 
