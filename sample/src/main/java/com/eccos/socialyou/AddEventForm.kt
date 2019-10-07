@@ -41,8 +41,6 @@ import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 import android.preference.PreferenceManager
 import android.view.inputmethod.InputMethodManager
@@ -51,7 +49,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.add_event_form.*
-import java.util.ArrayList
+import java.text.ParseException
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class AddEventForm : AppCompatActivity() {
@@ -353,7 +353,7 @@ class AddEventForm : AppCompatActivity() {
         time!!.setOnClickListener {
             TimePickerDialog(this@AddEventForm,
                     TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        val dateTime = hourOfDay.toString() + ":" + String.format(Locale.getDefault(), "%02d", minute)
+                        val dateTime = getFormatedDateTime("$hourOfDay:$minute", "HH:mm", "hh:mm a")
                         time!!.setText(dateTime)
                     }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show()
         }
@@ -363,7 +363,7 @@ class AddEventForm : AppCompatActivity() {
             if (time!!.hasFocus()) {
                 TimePickerDialog(this@AddEventForm,
                         TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                            val dateTime = hourOfDay.toString() + ":" + String.format(Locale.getDefault(), "%02d", minute)
+                            val dateTime = getFormatedDateTime("$hourOfDay:$minute", "HH:mm", "hh:mm a")
                             time!!.setText(dateTime)
                         }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show()
             }
@@ -452,5 +452,26 @@ class AddEventForm : AppCompatActivity() {
         private val PICK_IMAGE_REQUEST = 1
 
         private val TAG = "AddEventForm"
+    }
+
+    private fun getFormatedDateTime(dateStr : String, strReadFormat : String, strWriteFormat : String) : String {
+
+        var formattedDate = dateStr
+
+        var readFormat =  SimpleDateFormat(strReadFormat, Locale.getDefault())
+        var writeFormat = SimpleDateFormat(strWriteFormat, Locale.getDefault())
+
+        var date : Date? = null
+
+        try {
+            date = readFormat.parse(dateStr);
+        } catch (e : ParseException) {
+        }
+
+        if (date != null) {
+            formattedDate = writeFormat.format(date);
+        }
+
+        return formattedDate;
     }
 }

@@ -20,7 +20,7 @@ class CardStackAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val spot = spots[position]
-
+        
 
         holder.title.text = spot.title
         holder.date.text = spot.date

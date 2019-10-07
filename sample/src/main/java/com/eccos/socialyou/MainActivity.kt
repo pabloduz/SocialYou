@@ -51,6 +51,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.Normalizer
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CardStackListener {
@@ -76,10 +78,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     private var spotsSwiped = ArrayList<String>()
     private var arrayList = ArrayList<String>()
 
+    private var currentDate : Date? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context= this
+        currentDate= Date()
 
         billingManager= BillingManager(this@MainActivity)
 
@@ -408,7 +413,13 @@ class MainActivity : AppCompatActivity(), CardStackListener {
                         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
                         progressBar.visibility = View.GONE
 
-                        addLast(1, key, title, date, time, location, description, url)
+                        var dateTime= "$date $time"
+
+                        var eventDate= SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US).parse(dateTime)
+
+                        if (currentDate!!.before(eventDate)) {
+                            addLast(1, key, title, date, time, location, description, url)
+                        }
 
                     }.addOnFailureListener {
                         // Handle any errors
@@ -485,9 +496,8 @@ class MainActivity : AppCompatActivity(), CardStackListener {
 
         //It must be after showPopup()
         addSpotSwiped(key)
-
-
     }
+
 
     private fun insertAttendee(key: String) {
         try {
@@ -714,7 +724,6 @@ class MainActivity : AppCompatActivity(), CardStackListener {
     init {
         instance = this
     }
-
 
     companion object {
         var freeUser: Boolean = true
